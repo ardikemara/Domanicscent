@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { products, getProduct, rupiah } from "@/lib/products";
 import AddToCart from "@/components/AddToCart";
+import ScentNotes from "@/components/ScentNotes";
+import ScentStory from "@/components/ScentStory";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -58,20 +60,26 @@ export default function ProductPage({ params }) {
         </div>
       </div>
 
-      <div className="pyramid">
-        <div className="pyramid__col">
-          <h4>Top notes</h4>
-          <ul>{p.notes.top.map((n) => <li key={n}>{n}</li>)}</ul>
+      {p.noteScene ? (
+        <ScentStory product={p} />
+      ) : p.noteImg ? (
+        <ScentNotes product={p} />
+      ) : (
+        <div className="pyramid">
+          <div className="pyramid__col">
+            <h4>Top notes</h4>
+            <ul>{p.notes.top.map((n) => <li key={n}>{n}</li>)}</ul>
+          </div>
+          <div className="pyramid__col">
+            <h4>Heart notes</h4>
+            <ul>{p.notes.mid.map((n) => <li key={n}>{n}</li>)}</ul>
+          </div>
+          <div className="pyramid__col">
+            <h4>Base notes</h4>
+            <ul>{p.notes.base.map((n) => <li key={n}>{n}</li>)}</ul>
+          </div>
         </div>
-        <div className="pyramid__col">
-          <h4>Heart notes</h4>
-          <ul>{p.notes.mid.map((n) => <li key={n}>{n}</li>)}</ul>
-        </div>
-        <div className="pyramid__col">
-          <h4>Base notes</h4>
-          <ul>{p.notes.base.map((n) => <li key={n}>{n}</li>)}</ul>
-        </div>
-      </div>
+      )}
 
       <div className="pdp__story">
         <h3>The story</h3>
