@@ -183,7 +183,7 @@ footer{background:var(--charcoal);color:var(--beige)}
 .scent__layer{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:baseline}
 .scent__tag{font-family:var(--disp);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 .scent__list{font-family:var(--serif);font-size:1.05rem;color:var(--umber)}
-.scent__media img{width:100%;height:auto;display:block;border-radius:12px}
+.scent__media img{width:100%;height:auto;display:block}
 @media(max-width:820px){
   .scent{grid-template-columns:1fr;gap:30px}
   .scent__media{order:-1}
