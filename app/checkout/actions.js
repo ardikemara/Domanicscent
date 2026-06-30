@@ -117,7 +117,7 @@ export async function createOrder(payload) {
 
     return { ok: true, orderNumber };
   } catch (e) {
-    return { ok: false, error: "Gagal membuat order. Coba lagi sebentar." };
+    return { ok: false, error: "Gagal: " + (e?.message || String(e)) };
   }
 }
 
