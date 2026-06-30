@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { rupiah } from "@/lib/products";
+import AddToCart from "@/components/AddToCart";
 
 export default function ProductCard({ p }) {
   return (
@@ -16,7 +17,7 @@ export default function ProductCard({ p }) {
         <p className="card__tag">{p.tagline}</p>
         <div className="card__foot">
           <span className="card__price">{rupiah(p.price)}</span>
-          <Link className="card__add" href={`/products/${p.slug}`}>Lihat</Link>
+          <AddToCart product={p} className="card__add" label="Add to bag" />
         </div>
       </div>
     </article>

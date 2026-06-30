@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { products } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
+import NewsletterForm from "@/components/NewsletterForm";
 
 export function Collection() {
   return (
@@ -129,10 +130,7 @@ export function Newsletter() {
         <p className="eyebrow">Stay in the story</p>
         <h2>Temukan persona profile-mu</h2>
         <p>Gabung buat early drops, styling notes, dan promo khusus member.</p>
-        <div className="news__form">
-          <input type="email" placeholder="email@kamu.com" aria-label="Email" />
-          <button type="button">Subscribe</button>
-        </div>
+        <NewsletterForm />
       </div>
     </section>
   );

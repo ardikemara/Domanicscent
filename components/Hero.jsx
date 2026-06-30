@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="hero">
       <img className="hero__bg" src="/images/hero.jpg" alt="Koleksi 4 parfum Domanic di atas kain silk" />
       <div className="hero__scrim" />
-      <div className="wrap">
+      <div className="hero__inner">
         <div className="hero__content">
           <span className="eyebrow">Extrait De Parfum · Signature Collection</span>
           <h1>A scent for <em>who you are.</em></h1>

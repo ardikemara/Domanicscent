@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CartButton from "@/components/cart/CartButton";
 
 export default function Header() {
   return (
@@ -15,7 +16,7 @@ export default function Header() {
             <Link href="/#why">Why Domanic</Link>
             <Link href="/#story">Our Story</Link>
           </nav>
-          <Link className="nav__cart" href="/#collection">Bag (0)</Link>
+          <CartButton />
         </div>
       </header>
     </>

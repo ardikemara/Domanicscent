@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { products, getProduct, rupiah } from "@/lib/products";
+import AddToCart from "@/components/AddToCart";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -39,7 +40,7 @@ export default function ProductPage({ params }) {
           </div>
 
           <div className="pdp__cta">
-            <button className="btn btn--solid" type="button">Add to bag</button>
+            <AddToCart product={p} className="btn btn--solid" label="Add to bag" />
             <Link className="btn btn--ghost" href="/persona">Cari persona-mu</Link>
           </div>
           <p className="pdp__note">Gratis ongkir di atas Rp 500.000 · Garansi 30 hari</p>
