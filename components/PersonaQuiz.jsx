@@ -87,7 +87,7 @@ export default function PersonaQuiz() {
         </div>
         <p className="lead">{p.tagline}</p>
         <div>
-          <Link className="btn btn--solid" href={`/products/${p.slug}`}>Lihat {p.name}</Link>
+          <Link className="btn btn--solid" href={`/persona/${p.slug}`}>Kenalan sama {p.name}</Link>
           <Link className="btn btn--ghost" href="/#collection">Lihat semua</Link>
         </div>
         <button className="qz__retry" type="button" onClick={reset}>Ulangi kuis</button>
