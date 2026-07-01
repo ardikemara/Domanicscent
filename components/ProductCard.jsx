@@ -5,13 +5,13 @@ import AddToCart from "@/components/AddToCart";
 export default function ProductCard({ p }) {
   return (
     <article className="card">
-      <Link href={`/products/${p.slug}`} className="card__media">
+      <Link href={`/persona/${p.slug}`} className="card__media">
         <img src={p.image} alt={`Domanic ${p.name}`} loading="lazy" />
       </Link>
       <div className="card__body">
         <p className="card__persona">{p.persona}</p>
         <h3 className="card__name">
-          <Link href={`/products/${p.slug}`}>{p.name}</Link>
+          <Link href={`/persona/${p.slug}`}>{p.name}</Link>
         </h3>
         <p className="card__char">{p.character}</p>
         <p className="card__tag">{p.tagline}</p>
