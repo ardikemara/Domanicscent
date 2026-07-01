@@ -205,13 +205,18 @@ footer{background:var(--charcoal);color:var(--beige)}
 
 /* ---------- Persona quiz page ---------- */
 .qz{padding:60px 0 100px;min-height:70vh}
+.qzpage{position:relative;min-height:82vh;padding:64px 20px 104px;
+  background:url("/images/toile-persona.png") center top/cover no-repeat;background-color:var(--off-white)}
+.qzpage__box{max-width:640px;margin:0 auto;background:var(--off-white);
+  border-radius:16px;padding:46px clamp(20px,4vw,46px) 50px;box-shadow:0 24px 70px rgba(74,60,46,.22)}
+@media(max-width:720px){.qzpage{padding:40px 14px 72px}.qzpage__box{padding:32px 20px 36px}}
 .qz__head{text-align:center;max-width:620px;margin:0 auto 44px}
 .qz__head h1{font-family:var(--disp);font-weight:400;font-size:clamp(2rem,4vw,3rem);color:var(--umber);margin:14px 0 10px}
 .qz__head p{font-family:var(--serif);font-style:italic;font-size:1.2rem;color:var(--taupe)}
 .qz__progress{height:3px;background:var(--cream);border-radius:999px;max-width:520px;margin:0 auto 40px;overflow:hidden}
 .qz__progress span{display:block;height:100%;background:var(--gold);transition:width .4s}
-.qz__card{max-width:620px;margin:0 auto;background:var(--off-white);border:1px solid rgba(160,136,112,.25);
-  border-radius:10px;padding:38px 34px}
+.qz__card{max-width:620px;margin:0 auto;background:transparent;border:none;
+  border-radius:0;padding:6px 0 0}
 .qz__q{font-family:var(--disp);font-size:1.3rem;color:var(--umber);text-align:center;margin-bottom:26px;letter-spacing:.01em}
 .qz__opts{display:flex;flex-direction:column;gap:12px}
 .qz__opt{text-align:left;font-family:var(--body);font-size:1rem;color:var(--charcoal);

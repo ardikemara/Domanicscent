@@ -7,13 +7,15 @@ export const metadata = {
 
 export default function PersonaPage() {
   return (
-    <div className="wrap qz">
-      <div className="qz__head">
-        <p className="eyebrow">Find your persona</p>
-        <h1>Wangi mana yang paling kamu?</h1>
-        <p>Empat pertanyaan singkat. Kami cariin Domanic yang paling kerasa kamu.</p>
+    <section className="qzpage">
+      <div className="qzpage__box">
+        <div className="qz__head">
+          <p className="eyebrow">Find your persona</p>
+          <h1>Wangi mana yang paling kamu?</h1>
+          <p>Empat pertanyaan singkat. Kami cariin Domanic yang paling kerasa kamu.</p>
+        </div>
+        <PersonaQuiz />
       </div>
-      <PersonaQuiz />
-    </div>
+    </section>
   );
 }
