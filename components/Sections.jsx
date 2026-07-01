@@ -89,9 +89,10 @@ export function WhyDomanic() {
 export function Story() {
   return (
     <section className="story" id="story">
+      <div className="story__bg" aria-hidden="true" />
       <div className="wrap story__inner">
         <p className="eyebrow">Fragrance as identity</p>
-        <blockquote>Setiap wangi adalah bab. Setiap bab adalah kamu.</blockquote>
+        <blockquote>Setiap wangi adalah chapter. Setiap chapter adalah kamu.</blockquote>
         <p>
           Wangi nggak bisa difoto, tapi karakter bisa. Tiap Domanic dibikin biar kerasa kayak sosok
           yang kamu kenali begitu dipakai, dan terus nempel di ingatan.

@@ -102,8 +102,13 @@ header{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.8);
 .usp__txt p{font-size:.95rem;color:var(--charcoal);opacity:.82}
 
 /* story */
-.story{background:var(--umber);color:var(--off-white);text-align:center}
-.story__inner{padding:110px 0;max-width:760px;margin:0 auto}
+.story{position:relative;overflow:hidden;background:var(--umber);color:var(--off-white);text-align:center}
+.story__bg{position:absolute;inset:0;pointer-events:none;
+  background:url("/images/toile-fragrance-identity.png") center/cover no-repeat;opacity:.6}
+.story__bg::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 64% 72% at 50% 50%,
+    rgba(74,60,46,.88) 0%,rgba(74,60,46,.42) 52%,rgba(74,60,46,0) 100%)}
+.story__inner{position:relative;z-index:1;padding:110px 0;max-width:760px;margin:0 auto}
 .story .eyebrow{color:var(--beige)}
 .story blockquote{font-family:var(--serif);font-style:italic;font-weight:400;
   font-size:clamp(1.5rem,3.2vw,2.2rem);line-height:1.4;margin:22px 0 26px}
