@@ -497,3 +497,20 @@ footer{background:var(--charcoal);color:var(--beige)}
   .pz-hero--editorial{background-position:78% center}
   .pz-hero--editorial .pz-hero__scrim{background:linear-gradient(180deg,rgba(61,43,33,.35) 0%,rgba(61,43,33,.78) 55%,rgba(61,43,33,.94) 100%)}
 }
+
+/* editorial hero variant, light daylight version (sage scene, deep olive text) */
+.pz-hero--editorial-light{background-color:#9FAE8C;background-position:72% center}
+.pz-hero--editorial-light .pz-hero__scrim{background:linear-gradient(90deg,rgba(159,174,140,.5) 0%,rgba(159,174,140,.22) 34%,rgba(159,174,140,0) 58%)}
+.pz-hero--editorial-light .pz-eyebrow{color:#4E5A3D}
+.pz-hero--editorial-light h1{color:#37412C}
+.pz-hero--editorial-light .pz-hero__tag{color:#37412C}
+.pz-hero--editorial-light .pz-hero__sub{color:#4E5A3D}
+.pz-hero--editorial-light .pz-rule{background:#4E5A3D}
+.pz-hero--editorial-light .btn--solid{background:#37412C;color:#F2EFE7}
+.pz-hero--editorial-light .btn--solid:hover{background:#2A3221}
+.pz-hero--editorial-light .btn--ghost{border-color:#4E5A3D;color:#37412C}
+.pz-hero--editorial-light .btn--ghost:hover{background:#37412C;color:#F2EFE7}
+@media(max-width:820px){
+  .pz-hero--editorial-light{background-position:76% center}
+  .pz-hero--editorial-light .pz-hero__scrim{background:linear-gradient(180deg,rgba(159,174,140,.28) 0%,rgba(159,174,140,.66) 55%,rgba(159,174,140,.9) 100%)}
+}
