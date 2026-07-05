@@ -123,7 +123,7 @@ export default function PersonaDetailPage({ params }) {
               <div className="pz-occasion__card" key={o.label}>
                 {o.img ? (
                   <>
-                    <div className="pz-occasion__media"><img src={o.img} alt={o.label} /></div>
+                    <div className={"pz-occasion__media" + (c.occasionEditorial ? " pz-occasion__media--editorial" : "")}><img src={o.img} alt={o.label} /></div>
                     <p>{o.label}</p>
                   </>
                 ) : (
