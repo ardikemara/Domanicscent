@@ -531,3 +531,20 @@ footer{background:var(--charcoal);color:var(--beige)}
   .pz-hero--editorial-blush{background-position:76% center}
   .pz-hero--editorial-blush .pz-hero__scrim{background:linear-gradient(180deg,rgba(227,205,193,.3) 0%,rgba(227,205,193,.68) 55%,rgba(227,205,193,.92) 100%)}
 }
+
+/* editorial hero variant, graphite version (Oud: cold dark scene, steel-cream text) */
+.pz-hero--editorial-graphite{background-color:#262C38;background-position:72% center}
+.pz-hero--editorial-graphite .pz-hero__scrim{background:linear-gradient(90deg,rgba(38,44,56,.92) 0%,rgba(38,44,56,.6) 30%,rgba(38,44,56,.14) 52%,rgba(38,44,56,0) 70%)}
+.pz-hero--editorial-graphite .pz-eyebrow{color:#AEB6C6}
+.pz-hero--editorial-graphite h1{color:#E6EAF2}
+.pz-hero--editorial-graphite .pz-hero__tag{color:#E6EAF2}
+.pz-hero--editorial-graphite .pz-hero__sub{color:#AEB6C6}
+.pz-hero--editorial-graphite .pz-rule{background:#AEB6C6}
+.pz-hero--editorial-graphite .btn--solid{background:#E6EAF2;color:#262C38}
+.pz-hero--editorial-graphite .btn--solid:hover{background:#fff}
+.pz-hero--editorial-graphite .btn--ghost{border-color:#AEB6C6;color:#E6EAF2}
+.pz-hero--editorial-graphite .btn--ghost:hover{background:#E6EAF2;color:#262C38}
+@media(max-width:820px){
+  .pz-hero--editorial-graphite{background-position:78% center}
+  .pz-hero--editorial-graphite .pz-hero__scrim{background:linear-gradient(180deg,rgba(38,44,56,.35) 0%,rgba(38,44,56,.78) 55%,rgba(38,44,56,.94) 100%)}
+}
