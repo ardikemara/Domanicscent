@@ -34,7 +34,7 @@ export default function PersonaDetailPage({ params }) {
   return (
     <div className="pz" style={{ "--accent": c.accent }}>
       {/* 1. HERO */}
-      <section className={"pz-hero" + (c.heroEditorial ? " pz-hero--editorial" : "") + (c.heroEditorialLight ? " pz-hero--editorial-light" : "")} style={{ backgroundImage: `url(${c.heroImg})` }}>
+      <section className={"pz-hero" + (c.heroEditorial ? " pz-hero--editorial" : "") + (c.heroEditorialLight ? " pz-hero--editorial-light" : "") + (c.heroEditorialBlush ? " pz-hero--editorial-blush" : "")} style={{ backgroundImage: `url(${c.heroImg})` }}>
         <div className="pz-hero__scrim" />
         <div className="pz-hero__inner">
           <div className="pz-hero__content">
