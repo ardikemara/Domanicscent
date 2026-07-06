@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Terima kasih · DOMANIC",
+  robots: { index: false, follow: false },
 };
 
 async function fetchOrder(orderNumber) {

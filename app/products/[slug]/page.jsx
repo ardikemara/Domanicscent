@@ -12,9 +12,40 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const p = getProduct(params.slug);
   if (!p) return {};
+  const title = p.seo?.title || `${p.name} · DOMANIC`;
+  const description = p.seo?.description || p.tagline;
   return {
-    title: `${p.name} · DOMANIC`,
-    description: p.tagline,
+    title,
+    description,
+    alternates: { canonical: `/products/${p.slug}` },
+    openGraph: {
+      type: "website",
+      url: `/products/${p.slug}`,
+      title,
+      description,
+      images: [{ url: p.image, width: 1200, height: 900, alt: `Domanic ${p.name}, ${p.concentration}` }],
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
+
+function productJsonLd(p) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `Domanic ${p.name}`,
+    image: [`https://www.domanicscent.com${p.image}`],
+    description: p.seo?.description || p.tagline,
+    brand: { "@type": "Brand", name: "Domanic Scent" },
+    category: "Extrait de Parfum",
+    offers: {
+      "@type": "Offer",
+      url: `https://www.domanicscent.com/products/${p.slug}`,
+      priceCurrency: "IDR",
+      price: p.price,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
   };
 }
 
@@ -24,6 +55,10 @@ export default function ProductPage({ params }) {
 
   return (
     <div className="wrap pdp">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }}
+      />
       <Link href="/#collection" className="pdp__back">← Kembali ke collection</Link>
 
       <div className="pdp__top">

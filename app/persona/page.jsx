@@ -1,8 +1,17 @@
 import PersonaQuiz from "@/components/PersonaQuiz";
 
 export const metadata = {
-  title: "Find Your Persona · DOMANIC",
-  description: "Jawab beberapa pertanyaan, temukan Domanic yang paling kerasa kamu.",
+  title: "Find Your Persona · Parfum Sesuai Kepribadian · DOMANIC",
+  description:
+    "Kuis singkat buat nemuin parfum sesuai kepribadianmu. Jawab beberapa pertanyaan, temukan extrait de parfum Domanic yang paling kerasa kamu.",
+  alternates: { canonical: "/persona" },
+  openGraph: {
+    type: "website",
+    url: "/persona",
+    title: "Find Your Persona · Parfum Sesuai Kepribadian · DOMANIC",
+    description:
+      "Kuis singkat buat nemuin parfum sesuai kepribadianmu. Empat persona, empat extrait de parfum.",
+  },
 };
 
 export default function PersonaPage() {

@@ -11,9 +11,20 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const p = getProduct(params.slug);
   if (!p) return {};
+  const title = `${p.persona} · ${p.name} · DOMANIC`;
+  const description = `Kenalan sama ${p.persona}, persona di balik ${p.name}. Extrait de parfum Domanic buat kamu yang ${p.character.toLowerCase().split(" · ").join(", ")}. Temukan parfum sesuai kepribadianmu.`;
   return {
-    title: `${p.persona} · ${p.name} · DOMANIC`,
-    description: p.tagline,
+    title,
+    description,
+    alternates: { canonical: `/persona/${p.slug}` },
+    openGraph: {
+      type: "website",
+      url: `/persona/${p.slug}`,
+      title,
+      description,
+      images: [{ url: p.image, width: 1200, height: 900, alt: `Domanic ${p.name}, ${p.persona}` }],
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 

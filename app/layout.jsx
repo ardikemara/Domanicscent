@@ -5,9 +5,23 @@ import { CartProvider } from "@/components/cart/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 
 export const metadata = {
-  title: "DOMANIC · A scent for who you are",
+  metadataBase: new URL("https://www.domanicscent.com"),
+  title: "DOMANIC · Extrait de Parfum Indonesia · Wear Your Identity",
   description:
-    "Domanic Scent. Extrait de parfum yang dibuat pelan di Indonesia. Empat parfum, empat persona, satu yang paling kamu banget.",
+    "Domanic Scent, extrait de parfum lokal premium yang dibuat pelan di Indonesia dan fully macerated 2-4 minggu. Empat parfum, empat persona, satu yang paling kamu banget.",
+  openGraph: {
+    type: "website",
+    siteName: "DOMANIC",
+    locale: "id_ID",
+    url: "/",
+    title: "DOMANIC · Extrait de Parfum Indonesia · Wear Your Identity",
+    description:
+      "Extrait de parfum lokal premium, dibuat pelan di Indonesia dan fully macerated 2-4 minggu. Empat parfum, empat persona, satu yang paling kamu banget.",
+    images: [{ url: "/images/hero.jpg", width: 1200, height: 630, alt: "Domanic Scent, empat extrait de parfum" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }) {
