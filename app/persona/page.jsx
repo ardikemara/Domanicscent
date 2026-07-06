@@ -8,6 +8,12 @@ export const metadata = {
 export default function PersonaPage() {
   return (
     <section className="qzpage">
+      <div className="qzpage__bg" aria-hidden="true">
+        <img className="qzbg qzbg--tl" src="/images/quiz/quiz-velvet.webp" alt="" />
+        <img className="qzbg qzbg--tr" src="/images/quiz/quiz-lily.webp" alt="" />
+        <img className="qzbg qzbg--bl" src="/images/quiz/quiz-whisper.webp" alt="" />
+        <img className="qzbg qzbg--br" src="/images/quiz/quiz-oud.webp" alt="" />
+      </div>
       <div className="qzpage__box">
         <div className="qz__head">
           <p className="eyebrow">Find your persona</p>
