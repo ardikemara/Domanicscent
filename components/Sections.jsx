@@ -44,19 +44,19 @@ export function PersonaTeaser() {
 export function WhyDomanic() {
   const items = [
     {
-      img: "/images/why-created.jpg",
+      img: "/images/why-photo-1.webp",
       alt: "Tangan meracik formula parfum dengan pipet",
       h: "Created, not cooked",
       p: "Setiap wangi dimulai dari persona dan cerita, baru aromanya disusun. Kami bikin identitas, bukan resep.",
     },
     {
-      img: "/images/why-time.jpg",
+      img: "/images/why-photo-2.webp",
       alt: "Menandai tanggal maserasi di kalender",
       h: "Time-crafted",
       p: "Kami ikut ritme luxury house: berminggu maserasi, berbulan revisi. Karena luxury nggak bisa instan.",
     },
     {
-      img: "/images/why-matured.jpg",
+      img: "/images/why-photo-3.webp",
       alt: "Botol Domanic diistirahatkan di rak untuk matang",
       h: "Fully matured",
       p: "Tiap batch diistirahatkan 2 sampai 4 minggu biar notes-nya nyatu, alkoholnya melembut, karakternya keluar penuh.",

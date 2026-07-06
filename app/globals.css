@@ -62,7 +62,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.8);
 
 /* collection */
 .collection{background:var(--cream)}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
 .card{background:var(--off-white);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;
   box-shadow:0 1px 0 rgba(160,136,112,.2);transition:transform .3s,box-shadow .3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 28px 52px -28px rgba(74,60,46,.45)}
@@ -255,7 +255,7 @@ footer{background:var(--charcoal);color:var(--beige)}
   .hero .rule--left{margin-left:auto;margin-right:auto}
 }
 @media(max-width:540px){
-  .grid4{grid-template-columns:1fr 1fr}
+  .grid4{grid-template-columns:1fr}
   .news__form{flex-direction:column}
   .foot{grid-template-columns:1fr}
   .pdp__detailrow{gap:20px}
