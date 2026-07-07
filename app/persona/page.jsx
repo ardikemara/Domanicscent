@@ -27,7 +27,7 @@ export default function PersonaPage() {
         <div className="qz__head">
           <p className="eyebrow">Find your persona</p>
           <h1>Wangi mana yang paling kamu?</h1>
-          <p>Empat pertanyaan singkat. Kami cariin Domanic yang paling kerasa kamu.</p>
+          <p>Empat pertanyaan singkat buat nemuin parfum yang sesuai kepribadianmu. Kami cariin Domanic yang paling kerasa kamu.</p>
         </div>
         <PersonaQuiz />
       </div>

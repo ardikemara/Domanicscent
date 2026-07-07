@@ -600,3 +600,14 @@ footer{background:var(--charcoal);color:var(--beige)}
   .qzbg{width:58vw;opacity:.42}
   .qzbg--bl,.qzbg--tr{display:none}
 }
+
+/* ---- Info pages (FAQ, Shipping) ---- */
+.infopage{max-width:720px;margin:0 auto;padding:72px 28px 96px}
+.infopage h1{font-family:var(--disp);font-weight:400;font-size:2.2rem;color:var(--umber);margin:14px 0 12px}
+.infopage__lead{font-size:1.05rem;color:var(--charcoal);opacity:.8;line-height:1.7;margin-bottom:44px}
+.infopage__item{margin-bottom:34px}
+.infopage__item h2{font-family:var(--disp);font-weight:400;font-size:1.15rem;color:var(--umber);margin-bottom:8px;letter-spacing:.01em}
+.infopage__item p{font-size:.98rem;color:var(--charcoal);opacity:.85;line-height:1.75}
+.infopage__item a,.infopage__foot a{color:var(--umber);text-decoration:underline;text-underline-offset:3px}
+.infopage__foot{margin-top:52px;padding-top:28px;border-top:1px solid rgba(0,0,0,.08)}
+.infopage__foot p{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}

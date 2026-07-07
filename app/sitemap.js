@@ -8,6 +8,8 @@ export default function sitemap() {
   const staticPages = [
     { url: `${BASE}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE}/persona`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE}/shipping`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const productPages = products.map((p) => ({

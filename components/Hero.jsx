@@ -85,7 +85,7 @@ export default function Hero() {
         <span className="eyebrow">Extrait De Parfum · Signature Collection</span>
         <h1>A scent for <em>who you are.</em></h1>
         <p className="mz__sub">
-          Wangi untuk jadi dirimu. Empat parfum, empat persona, satu yang paling kamu banget.
+          Extrait de parfum dari Indonesia, dibuat pelan dan fully macerated. Empat persona, satu yang paling kamu banget.
         </p>
         <div className="mz__cta">
           <Link className="btn btn--solid" href="/#collection">Lihat collection</Link>

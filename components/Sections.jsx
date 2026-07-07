@@ -28,7 +28,7 @@ export function PersonaTeaser() {
       <div className="wrap quiz__inner">
         <p className="eyebrow">Bingung mulai dari mana?</p>
         <h2>Find your persona</h2>
-        <p>Jawab beberapa pertanyaan, nanti kami cariin Domanic yang paling kerasa kamu.</p>
+        <p>Jawab beberapa pertanyaan, nanti kami cariin parfum yang sesuai kepribadianmu.</p>
         <div className="chips">
           <span className="chip">The Midnight Intellectual</span>
           <span className="chip">The Free-Spirited Explorer</span>

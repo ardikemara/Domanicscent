@@ -20,10 +20,10 @@ export default function Footer() {
         <div>
           <h5>Help</h5>
           <ul>
-            <li><Link href="/#">Shipping &amp; returns</Link></li>
+            <li><Link href="/shipping">Shipping &amp; returns</Link></li>
             <li><Link href="/#">Lacak order</Link></li>
             <li><Link href="/#">Kontak</Link></li>
-            <li><Link href="/#">FAQ</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
           </ul>
         </div>
         <div>

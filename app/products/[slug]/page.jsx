@@ -89,7 +89,7 @@ export default function ProductPage({ params }) {
             </div>
             <div className="pdp__detail">
               <b>Persona</b>
-              <span>{p.persona}</span>
+              <span><Link href={`/persona/${p.slug}`}>{p.persona}</Link></span>
             </div>
           </div>
         </div>
