@@ -32,7 +32,7 @@ export default function Footer() {
             <li><Link href="/#story">Our story</Link></li>
             <li><Link href="/persona">Find your persona</Link></li>
             <li><Link href="/#">Instagram</Link></li>
-            <li><Link href="/#">Journal</Link></li>
+            <li><Link href="/journal">Journal</Link></li>
           </ul>
         </div>
       </div>

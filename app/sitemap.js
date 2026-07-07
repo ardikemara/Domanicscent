@@ -1,4 +1,5 @@
 import { products } from "@/lib/products";
+import { articles } from "@/lib/journal";
 
 const BASE = "https://www.domanicscent.com";
 
@@ -10,6 +11,7 @@ export default function sitemap() {
     { url: `${BASE}/persona`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE}/shipping`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE}/journal`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
   ];
 
   const productPages = products.map((p) => ({
@@ -26,5 +28,12 @@ export default function sitemap() {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...productPages, ...personaPages];
+  const articlePages = articles.map((a) => ({
+    url: `${BASE}/journal/${a.slug}`,
+    lastModified: new Date(a.date),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...productPages, ...personaPages, ...articlePages];
 }

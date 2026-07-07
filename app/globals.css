@@ -611,3 +611,41 @@ footer{background:var(--charcoal);color:var(--beige)}
 .infopage__item a,.infopage__foot a{color:var(--umber);text-decoration:underline;text-underline-offset:3px}
 .infopage__foot{margin-top:52px;padding-top:28px;border-top:1px solid rgba(0,0,0,.08)}
 .infopage__foot p{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
+
+/* ---- Journal ---- */
+.journal__list{display:flex;flex-direction:column;gap:22px}
+.journal__card{display:block;padding:28px;border:1px solid rgba(0,0,0,.09);background:#fff;transition:border-color .2s}
+.journal__card:hover{border-color:var(--umber)}
+.journal__card h2{font-family:var(--disp);font-weight:400;font-size:1.35rem;color:var(--umber);margin:10px 0 8px;letter-spacing:.01em}
+.journal__desc{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
+.journal__meta{margin-top:14px;font-size:.8rem;color:var(--taupe)}
+.article__meta{font-size:.82rem;color:var(--taupe);margin:6px 0 26px}
+.article__table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
+.article__table th{font-family:var(--disp);font-weight:400;text-align:left;color:var(--umber);letter-spacing:.02em}
+.article__table th,.article__table td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.09);color:var(--charcoal)}
+.article__table td{opacity:.85;line-height:1.6}
+
+/* ---- Article figures & FAQ ---- */
+.article__fig{margin:30px 0}
+.article__fig img{width:100%;height:auto;display:block}
+.article__fig figcaption{margin-top:10px;font-size:.8rem;color:var(--taupe);text-align:center}
+.article__fig--pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.article__fig--bottle{max-width:280px;margin:30px auto}
+.article__faq{margin-top:52px}
+.article__faqitem{margin-top:22px}
+.article__faqitem h3{font-family:var(--disp);font-weight:400;font-size:1rem;color:var(--umber);margin-bottom:6px}
+.article__faqitem p{font-size:.95rem;color:var(--charcoal);opacity:.85;line-height:1.75}
+@media (max-width:560px){.article__fig--pair{grid-template-columns:1fr}}
+
+/* ---- Article product CTA ---- */
+.article__fig--notes{max-width:520px;margin:26px auto}
+.article__products{margin:56px 0 8px;padding:36px 0;border-top:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08)}
+.article__products h2{font-family:var(--disp);font-weight:400;font-size:1.3rem;color:var(--umber);margin:8px 0 22px}
+.article__prodgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.article__prodcard{display:flex;flex-direction:column;gap:4px;text-decoration:none}
+.article__prodcard img{width:100%;height:auto;display:block;margin-bottom:8px}
+.article__prodcard b{font-family:var(--disp);font-weight:400;font-size:.95rem;color:var(--umber);letter-spacing:.02em}
+.article__prodcard span{font-size:.8rem;color:var(--charcoal);opacity:.75;line-height:1.5}
+.article__prodcard .article__prodprice{color:var(--taupe)}
+.article__prodcard:hover b{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:640px){.article__prodgrid{grid-template-columns:repeat(2,1fr)}}
