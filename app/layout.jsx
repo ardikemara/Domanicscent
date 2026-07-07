@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
+import Analytics from "@/components/Analytics";
 
 export const metadata = {
   metadataBase: new URL("https://www.domanicscent.com"),
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <Analytics />
         <CartProvider>
           <Header />
           <main>{children}</main>
