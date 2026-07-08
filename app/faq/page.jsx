@@ -40,7 +40,7 @@ const faqs = [
   },
   {
     q: "Ongkirnya berapa?",
-    a: "Gratis ongkir untuk order di atas Rp 500.000. Di bawah itu, ongkir flat Rp 25.000 ke seluruh Indonesia. Order pertama? Pakai kode DOMANIC10 buat 10% off.",
+    a: "Gratis ongkir untuk order di atas Rp 500.000. Di bawah itu, ongkir dihitung otomatis pakai tarif JNE dari gudang kami di Bekasi, jadi kamu bayar sesuai tujuanmu. Order pertama? Pakai kode DOMANIC10 buat 10% off.",
   },
   {
     q: "Kalau ada kendala sama order aku gimana?",

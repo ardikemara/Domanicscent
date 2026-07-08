@@ -329,6 +329,11 @@ footer{background:var(--charcoal);color:var(--beige)}
 .summary__totals .grand{font-family:var(--disp);font-size:1.2rem;color:var(--umber);border-top:1px solid rgba(160,136,112,.3);padding-top:10px;margin-top:4px}
 .checkout__submit{display:block;width:100%;text-align:center;margin-top:18px}
 .checkout__paynote{font-size:.78rem;color:var(--taupe);margin-top:12px;line-height:1.5}
+.field--dest{position:relative}
+.field__hint{font-size:.72rem;color:var(--taupe);margin-top:6px}
+.dest__options{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #e2d9cc;border-radius:10px;margin-top:4px;max-height:260px;overflow:auto;box-shadow:0 10px 24px rgba(40,28,18,.12);list-style:none;padding:4px}
+.dest__options li button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;background:none;font:inherit;font-size:.85rem;cursor:pointer;border-radius:6px}
+.dest__options li button:hover{background:#f4ede2}
 .paybadge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:.78rem;letter-spacing:.02em}
 .paybadge--paid{background:#e6efe6;color:#2f5d3a}
 .paybadge--pending{background:#f4ead9;color:#8a6a3b}

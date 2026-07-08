@@ -3,17 +3,59 @@
 import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { createSnapTransaction } from "@/lib/midtrans";
+import { searchDestination, quoteJne } from "@/lib/rajaongkir";
 
-const SHIPPING_FLAT = 25000;
+const SHIPPING_FALLBACK = 25000;   // dipakai kalau API ongkir gagal
 const FREE_SHIP_MIN = 500000;
+const GRAMS_PER_BOTTLE = 500;      // asumsi botol 50ml + packaging; update setelah ditimbang
 
 function priceFor(slug) {
   const p = products.find((x) => x.slug === slug);
   return p ? p : null;
 }
 
-function shippingFor(subtotal) {
-  return subtotal >= FREE_SHIP_MIN ? 0 : SHIPPING_FLAT;
+function weightFor(totalQty) {
+  return Math.max(1, totalQty) * GRAMS_PER_BOTTLE;
+}
+
+// Hitung ongkir server-side. Gratis di atas FREE_SHIP_MIN, sisanya real-time JNE
+// (origin gudang Bekasi) dengan fallback flat kalau API bermasalah.
+async function shippingQuoteFor(subtotal, totalQty, destinationId) {
+  if (subtotal >= FREE_SHIP_MIN) return { cost: 0, service: null, etd: null, free: true };
+  if (destinationId) {
+    const q = await quoteJne(destinationId, weightFor(totalQty));
+    if (q) return { cost: q.cost, service: q.service, etd: q.etd, free: false };
+  }
+  return { cost: SHIPPING_FALLBACK, service: null, etd: null, free: false };
+}
+
+// Autocomplete tujuan pengiriman (dipakai checkout page).
+export async function findDestinations(query) {
+  try {
+    return await searchDestination(query);
+  } catch {
+    return [];
+  }
+}
+
+// Quote ongkir untuk ditampilkan di ringkasan checkout (sebelum order dibuat).
+export async function quoteShipping(destinationId, items) {
+  try {
+    const list = Array.isArray(items) ? items : [];
+    let subtotal = 0;
+    let qty = 0;
+    for (const it of list) {
+      const p = priceFor(it.slug);
+      const n = Math.max(1, parseInt(it.qty, 10) || 1);
+      if (!p) continue;
+      subtotal += p.price * n;
+      qty += n;
+    }
+    const s = await shippingQuoteFor(subtotal, qty, destinationId);
+    return { ok: true, ...s };
+  } catch {
+    return { ok: true, cost: SHIPPING_FALLBACK, service: null, etd: null, free: false };
+  }
 }
 
 // Validate a promo code against the DB. Returns discount in rupiah.
@@ -60,12 +102,14 @@ export async function createOrder(payload) {
     // recompute line items from server data
     const lines = [];
     let subtotal = 0;
+    let totalQty = 0;
     for (const it of items) {
       const p = priceFor(it.slug);
       const qty = Math.max(1, parseInt(it.qty, 10) || 1);
       if (!p) continue;
       const lineTotal = p.price * qty;
       subtotal += lineTotal;
+      totalQty += qty;
       lines.push({ slug: p.slug, name: p.name, unit: p.price, qty, lineTotal });
     }
     if (lines.length === 0) return { ok: false, error: "Produk nggak valid." };
@@ -73,7 +117,10 @@ export async function createOrder(payload) {
     const promo = await checkPromo(payload?.promoCode, subtotal);
     const discount = promo.valid ? promo.discount : 0;
     const promoApplied = promo.valid ? promo.code : null;
-    const shipping = shippingFor(subtotal);
+    const destinationId = payload?.destination?.id ? parseInt(payload.destination.id, 10) : null;
+    const destinationLabel = (payload?.destination?.label || "").slice(0, 200) || null;
+    const ship = await shippingQuoteFor(subtotal, totalQty, destinationId);
+    const shipping = ship.cost;
     const total = subtotal - discount + shipping;
 
     const sql = getSql();
@@ -89,12 +136,14 @@ export async function createOrder(payload) {
         insert into domanic.orders
           (order_number, customer_id, status, payment_status, payment_method,
            subtotal, discount, shipping, total, promo_code,
-           name, phone, shipping_address, shipping_city, note)
+           name, phone, shipping_address, shipping_city, note,
+           shipping_destination_id, shipping_courier, shipping_etd)
         values
           ('DMN-' || to_char(now() at time zone 'Asia/Jakarta','YYYYMMDD') || '-' || lpad(nextval('domanic.order_seq')::text, 4, '0'),
            ${cust.id}, 'pending', 'unpaid', 'midtrans',
            ${subtotal}, ${discount}, ${shipping}, ${total}, ${promoApplied},
-           ${c.name}, ${c.phone}, ${c.address}, ${c.city || null}, ${c.note || null})
+           ${c.name}, ${c.phone}, ${c.address}, ${destinationLabel || c.city || null}, ${c.note || null},
+           ${destinationId}, ${ship.service ? 'jne' : null}, ${ship.etd || null})
         returning order_number`;
       orderNumber = order.order_number;
 

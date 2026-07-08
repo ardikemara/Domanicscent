@@ -3,7 +3,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Shipping & Returns · DOMANIC",
   description:
-    "Info pengiriman dan returns Domanic Scent. Gratis ongkir di atas Rp 500.000, flat Rp 25.000 ke seluruh Indonesia, garansi 30 hari.",
+    "Info pengiriman dan returns Domanic Scent. Ongkir JNE real-time dari Bekasi, gratis ongkir di atas Rp 500.000, garansi 30 hari.",
   alternates: { canonical: "/shipping" },
   openGraph: {
     type: "website",
@@ -25,7 +25,7 @@ export default function ShippingPage() {
       <section className="infopage__item">
         <h2>Ongkos kirim</h2>
         <p>
-          Gratis ongkir untuk order di atas Rp 500.000. Di bawah itu, ongkir flat Rp 25.000 ke seluruh
+          Gratis ongkir untuk order di atas Rp 500.000. Di bawah itu, ongkir dihitung real-time pakai tarif JNE dari gudang kami di Bekasi ke seluruh
           Indonesia. Untuk order pertama, pakai kode <b>DOMANIC10</b> buat 10% off.
         </p>
       </section>
