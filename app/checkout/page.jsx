@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart, rupiah } from "@/components/cart/CartContext";
 import { createOrder, checkPromo } from "@/app/checkout/actions";
+import { paySnap } from "@/components/payment/snap";
 
 const SHIPPING_FLAT = 25000;
 const FREE_SHIP_MIN = 500000;
@@ -45,12 +46,31 @@ export default function CheckoutPage() {
       customer: form,
       promoCode: promoState.valid ? promo : "",
     });
-    setSubmitting(false);
-    if (res.ok) {
-      clear();
-      router.push(`/thank-you?order=${encodeURIComponent(res.orderNumber)}`);
-    } else {
+    if (!res.ok) {
+      setSubmitting(false);
       setError(res.error || "Gagal membuat order.");
+      return;
+    }
+
+    clear();
+    const goThanks = () => router.push(`/thank-you?order=${encodeURIComponent(res.orderNumber)}`);
+
+    if (!res.snapToken) {
+      // Snap gagal dibuat; order tetap tersimpan, customer bisa bayar dari thank-you page.
+      goThanks();
+      return;
+    }
+
+    try {
+      await paySnap(res.snapToken, {
+        onSuccess: goThanks,
+        onPending: goThanks,
+        onError: goThanks,
+        onClose: goThanks,
+      });
+      setSubmitting(false);
+    } catch {
+      goThanks();
     }
   }
 
@@ -129,10 +149,10 @@ export default function CheckoutPage() {
           {error && <p className="checkout__err">{error}</p>}
 
           <button className="btn btn--solid checkout__submit" type="button" onClick={submit} disabled={submitting}>
-            {submitting ? "Memproses..." : "Buat pesanan"}
+            {submitting ? "Memproses..." : "Bayar sekarang"}
           </button>
-          <p className="checkout__bypass">
-            Pembayaran masih di-bypass (belum ada gateway). Setelah pesan, tim Domanic akan menghubungi kamu via WhatsApp untuk pembayaran &amp; pengiriman.
+          <p className="checkout__paynote">
+            Pembayaran aman via Midtrans. Bisa pakai QRIS, GoPay, atau transfer bank (Virtual Account).
           </p>
         </aside>
       </div>

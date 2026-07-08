@@ -1,6 +1,24 @@
 import Link from "next/link";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
+import PayNowButton from "@/components/payment/PayNowButton";
+
+function isPaid(s) {
+  return s === "paid";
+}
+function paymentLabel(s) {
+  if (s === "paid") return "Lunas";
+  if (s === "pending") return "Menunggu pembayaran";
+  if (s === "expired") return "Kedaluwarsa, silakan bayar ulang";
+  if (s === "failed") return "Gagal, silakan coba lagi";
+  if (s === "refunded") return "Di-refund";
+  return "Belum dibayar";
+}
+function badgeKind(s) {
+  if (s === "paid") return "paid";
+  if (s === "pending" || s === "unpaid") return "pending";
+  return "failed";
+}
 
 export const dynamic = "force-dynamic";
 
@@ -43,15 +61,17 @@ export default async function ThankYou({ searchParams }) {
             {orderNumber
               ? `Order ${orderNumber} sedang kami proses.`
               : "Pesananmu sedang kami proses."}{" "}
-            Tim Domanic akan menghubungi kamu via WhatsApp untuk pembayaran dan pengiriman.
+            Tim Domanic akan menghubungi kamu via WhatsApp untuk pengiriman.
           </p>
           <Link className="btn btn--solid" href="/#collection">Lanjut belanja</Link>
         </>
       ) : (
         <>
           <p className="thanks__lead">
-            Order <b>{data.order.order_number}</b> atas nama {data.order.name}. Tim Domanic akan
-            menghubungi kamu via WhatsApp ({data.order.phone}) untuk pembayaran dan pengiriman.
+            Order <b>{data.order.order_number}</b> atas nama {data.order.name}.{" "}
+            {isPaid(data.order.payment_status)
+              ? `Pembayaran sudah kami terima. Tim Domanic akan menghubungi kamu via WhatsApp (${data.order.phone}) untuk pengiriman.`
+              : "Selesaikan pembayaran di bawah ini supaya pesananmu langsung kami proses."}
           </p>
 
           <div className="thanks__card">
@@ -75,8 +95,14 @@ export default async function ThankYou({ searchParams }) {
               Kirim ke: {data.order.shipping_address}{data.order.shipping_city ? `, ${data.order.shipping_city}` : ""}
             </p>
             <p className="thanks__status">
-              Status: {data.order.status} · Pembayaran: {data.order.payment_status} (bypass, gateway nyusul)
+              Pembayaran:{" "}
+              <span className={`paybadge paybadge--${badgeKind(data.order.payment_status)}`}>
+                {paymentLabel(data.order.payment_status)}
+              </span>
             </p>
+            {!isPaid(data.order.payment_status) && (
+              <PayNowButton orderNumber={data.order.order_number} />
+            )}
           </div>
 
           <Link className="btn btn--solid" href="/#collection">Lanjut belanja</Link>

@@ -328,7 +328,13 @@ footer{background:var(--charcoal);color:var(--beige)}
 .summary__totals .disc span:last-child{color:#4a7a3c}
 .summary__totals .grand{font-family:var(--disp);font-size:1.2rem;color:var(--umber);border-top:1px solid rgba(160,136,112,.3);padding-top:10px;margin-top:4px}
 .checkout__submit{display:block;width:100%;text-align:center;margin-top:18px}
-.checkout__bypass{font-size:.78rem;color:var(--taupe);margin-top:12px;line-height:1.5}
+.checkout__paynote{font-size:.78rem;color:var(--taupe);margin-top:12px;line-height:1.5}
+.paybadge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:.78rem;letter-spacing:.02em}
+.paybadge--paid{background:#e6efe6;color:#2f5d3a}
+.paybadge--pending{background:#f4ead9;color:#8a6a3b}
+.paybadge--failed{background:#f3e3e0;color:#8a4636}
+.thanks__paybtn{margin-top:14px}
+.thanks__payerr{font-size:.8rem;color:#8a4636;margin-top:8px}
 .checkout__err{color:#a85a3c;font-size:.85rem;margin-top:12px}
 
 /* thank you */

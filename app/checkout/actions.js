@@ -2,6 +2,7 @@
 
 import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
+import { createSnapTransaction } from "@/lib/midtrans";
 
 const SHIPPING_FLAT = 25000;
 const FREE_SHIP_MIN = 500000;
@@ -91,7 +92,7 @@ export async function createOrder(payload) {
            name, phone, shipping_address, shipping_city, note)
         values
           ('DMN-' || to_char(now() at time zone 'Asia/Jakarta','YYYYMMDD') || '-' || lpad(nextval('domanic.order_seq')::text, 4, '0'),
-           ${cust.id}, 'pending', 'bypass', 'bypass',
+           ${cust.id}, 'pending', 'unpaid', 'midtrans',
            ${subtotal}, ${discount}, ${shipping}, ${total}, ${promoApplied},
            ${c.name}, ${c.phone}, ${c.address}, ${c.city || null}, ${c.note || null})
         returning order_number`;
@@ -115,9 +116,71 @@ export async function createOrder(payload) {
         values ('checkout', ${c.email || null}, ${c.name}, ${c.phone})`;
     });
 
-    return { ok: true, orderNumber };
+    // Bikin transaksi Snap di Midtrans. Kalau gagal, order tetap tersimpan
+    // (payment_status 'unpaid') dan customer bisa bayar ulang dari thank-you page.
+    let snapToken = null;
+    try {
+      const snap = await createSnapTransaction({
+        orderNumber,
+        total,
+        items: lines,
+        discount,
+        shipping,
+        customer: c,
+      });
+      snapToken = snap.token;
+      await sql`
+        update domanic.orders
+        set snap_token = ${snapToken}, payment_status = 'pending'
+        where order_number = ${orderNumber}`;
+    } catch (e) {
+      // biarkan snapToken null; UI akan mengarahkan ke thank-you dengan opsi bayar ulang
+    }
+
+    return { ok: true, orderNumber, snapToken };
   } catch (e) {
     return { ok: false, error: "Gagal: " + (e?.message || String(e)) };
+  }
+}
+
+// Ambil (atau bikin ulang) snap token untuk order yang belum dibayar.
+// Dipakai tombol "Bayar sekarang" di thank-you page.
+export async function getSnapToken(orderNumber) {
+  const clean = (orderNumber || "").trim();
+  if (!clean) return { ok: false, error: "Order nggak ketemu." };
+  try {
+    const sql = getSql();
+    const rows = await sql`
+      select o.order_number, o.total, o.discount, o.shipping, o.payment_status, o.snap_token,
+             o.name, o.phone, o.shipping_address, o.shipping_city,
+             c.email
+      from domanic.orders o
+      left join domanic.customers c on c.id = o.customer_id
+      where o.order_number = ${clean} limit 1`;
+    if (rows.length === 0) return { ok: false, error: "Order nggak ketemu." };
+    const o = rows[0];
+    if (o.payment_status === "paid") return { ok: false, error: "Order ini sudah dibayar." };
+    if (o.snap_token) return { ok: true, snapToken: o.snap_token };
+
+    const items = await sql`
+      select product_slug, product_name, unit_price, qty
+      from domanic.order_items
+      where order_id = (select id from domanic.orders where order_number = ${clean})`;
+
+    const snap = await createSnapTransaction({
+      orderNumber: o.order_number,
+      total: o.total,
+      items: items.map((it) => ({ slug: it.product_slug, name: it.product_name, unit: it.unit_price, qty: it.qty })),
+      discount: o.discount,
+      shipping: o.shipping,
+      customer: { name: o.name, phone: o.phone, email: o.email, address: o.shipping_address, city: o.shipping_city },
+    });
+    await sql`
+      update domanic.orders set snap_token = ${snap.token}, payment_status = 'pending'
+      where order_number = ${clean}`;
+    return { ok: true, snapToken: snap.token };
+  } catch (e) {
+    return { ok: false, error: "Gagal menyiapkan pembayaran, coba lagi." };
   }
 }
 

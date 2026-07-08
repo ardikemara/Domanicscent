@@ -32,7 +32,7 @@ RLS aktif default-deny, jadi nggak ada key yang ke-expose ke browser.
 - **Cart**: ikon Bag di header, drawer slide-in, ubah qty, hapus item (state disimpan di localStorage).
 - **Checkout**: `/checkout` , form pengiriman, kode promo (validasi ke DB), ringkasan, ongkir (gratis di atas Rp 500.000).
 - **Order**: disimpan ke Supabase (customer + order + order_items), nomor order otomatis (DMN-YYYYMMDD-xxxx).
-- **Payment**: di-bypass (belum ada gateway). Order langsung ke Thank You page `/thank-you?order=...`.
+- **Payment**: Midtrans Snap (QRIS, GoPay, VA, dll). Order dibuat dulu (status pending), lalu popup Snap muncul. Status pembayaran di-update otomatis via webhook `/api/midtrans/notification`. Thank You page nampilin status real + tombol "Bayar sekarang" kalau belum lunas.
 - **Lead capture**: newsletter + checkout nyimpen ke tabel `leads`.
 
 ## Struktur
@@ -60,16 +60,23 @@ public/images/
 
 ## Yang BELUM ada (roadmap)
 
-1. Payment gateway beneran (Midtrans / Xendit: QRIS, GoPay, OVO, VA).
 2. Email transaksional (Resend).
 3. Admin panel: order, customer, promo, lead.
 4. Halaman Persona (penjelasan tiap persona) + halaman Article/Blog (SEO).
 5. Tracking pixels (GA, Meta, TikTok) , nunggu domain.
 
+## Midtrans
+
+- **Sandbox dulu.** Keys sandbox (prefix `SB-Mid-`) di dashboard Midtrans (Environment: Sandbox) > Settings > Access Keys.
+- **Payment Notification URL** (di dashboard Midtrans > Settings > Configuration): `https://www.domanicscent.com/api/midtrans/notification`. Set di sandbox DAN nanti di production.
+- Webhook diverifikasi pakai signature SHA-512, jadi status paid nggak bisa di-fake.
+- Kolom baru di `domanic.orders`: `snap_token`, `midtrans_transaction_id`, `paid_at` (migration `domanic_orders_midtrans_columns` sudah di-apply).
+- Go-live nanti: ganti value 2 keys ke production + set `MIDTRANS_IS_PRODUCTION` dan `NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION` ke `true`. Kode nggak berubah.
+
 ## Deploy ke Vercel
 
 1. Push ke GitHub, import di Vercel.
-2. Set Environment Variable `DOMANIC_DATABASE_URL` di Vercel (Project Settings > Environment Variables).
+2. Set Environment Variables di Vercel: `DOMANIC_DATABASE_URL`, `MIDTRANS_SERVER_KEY`, `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY`, `MIDTRANS_IS_PRODUCTION`, `NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION` (lihat `.env.example`).
 3. Deploy.
 
 ## Catatan brand
