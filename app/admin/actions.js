@@ -63,3 +63,55 @@ export async function cancelOrder(formData) {
   revalidatePath("/admin/orders");
   redirect(`/admin/orders/${encodeURIComponent(orderNumber)}`);
 }
+
+// ---- Versi drawer: dipanggil dari client, return {ok, order} (bukan redirect). ----
+// Sengaja TANPA revalidatePath: client update datanya sendiri dari `order` yang
+// di-return, jadi halaman nggak ke-refresh (kalau refresh, drawer ketutup/bounce).
+
+// Ambil satu order + item dalam bentuk plain object (buat di-return ke client).
+async function fetchOrderPlain(sql, on) {
+  const rows = await sql`
+    select o.*, c.email
+    from domanic.orders o
+    left join domanic.customers c on c.id = o.customer_id
+    where o.order_number = ${on} limit 1`;
+  if (rows.length === 0) return null;
+  const items = await sql`
+    select product_name, qty, unit_price, line_total
+    from domanic.order_items
+    where order_id = (select id from domanic.orders where order_number = ${on})`;
+  return { ...rows[0], items: items.map((it) => ({ ...it })) };
+}
+
+export async function markShippedFromDrawer(orderNumber, resi) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const tn = (resi || "").toString().trim();
+  if (!on || !tn) return { ok: false, error: "Nomor resi wajib diisi." };
+  const sql = getSql();
+  await sql`
+    update domanic.orders
+    set status = 'shipped', tracking_number = ${tn}, shipped_at = now()
+    where order_number = ${on} and payment_status = 'paid'`;
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
+}
+
+export async function markCompletedFromDrawer(orderNumber) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  await sql`
+    update domanic.orders set status = 'completed'
+    where order_number = ${on} and status = 'shipped'`;
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
+}
+
+export async function cancelOrderFromDrawer(orderNumber) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  await sql`
+    update domanic.orders set status = 'cancelled'
+    where order_number = ${on} and status in ('pending','paid')`;
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
+}

@@ -1,38 +1,47 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
 import { isAdmin } from "@/lib/adminAuth";
-import { logoutAdmin } from "@/app/admin/actions";
+import OrdersTable from "@/components/admin/OrdersTable";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders · Admin DOMANIC", robots: { index: false, follow: false } };
 
-const PAY_LABEL = {
-  paid: "Lunas", pending: "Menunggu", unpaid: "Belum bayar",
-  expired: "Kedaluwarsa", failed: "Gagal", refunded: "Refund",
-};
-const STATUS_LABEL = {
-  pending: "Baru", paid: "Siap kirim", shipped: "Dikirim",
-  completed: "Selesai", cancelled: "Dibatalkan",
-};
-
-function payKind(s) {
-  if (s === "paid") return "paid";
-  if (s === "pending" || s === "unpaid") return "pending";
-  return "failed";
-}
-
 async function fetchData(q, pay) {
   const sql = getSql();
   const like = q ? `%${q}%` : null;
-  const orders = await sql`
-    select order_number, name, phone, total, payment_status, status, tracking_number, created_at
-    from domanic.orders
-    where (${like}::text is null or order_number ilike ${like} or name ilike ${like} or phone ilike ${like})
-      and (${pay || null}::text is null or payment_status = ${pay || null})
-    order by created_at desc
+  const rows = await sql`
+    select o.id, o.order_number, o.name, o.phone,
+           o.subtotal, o.discount, o.shipping, o.total, o.promo_code,
+           o.payment_status, o.payment_method, o.status, o.tracking_number,
+           o.shipping_address, o.shipping_city, o.shipping_etd, o.note,
+           o.midtrans_transaction_id, o.paid_at, o.shipped_at, o.created_at,
+           c.email
+    from domanic.orders o
+    left join domanic.customers c on c.id = o.customer_id
+    where (${like}::text is null or o.order_number ilike ${like} or o.name ilike ${like} or o.phone ilike ${like})
+      and (${pay || null}::text is null or o.payment_status = ${pay || null})
+    order by o.created_at desc
     limit 100`;
+
+  // Ambil semua item order yang ke-list dalam satu query, lalu kelompokin.
+  const ids = rows.map((r) => r.id);
+  const itemsByOrder = {};
+  if (ids.length) {
+    const items = await sql`
+      select order_id, product_name, qty, unit_price, line_total
+      from domanic.order_items
+      where order_id in ${sql(ids)}`;
+    for (const it of items) {
+      (itemsByOrder[it.order_id] ||= []).push({
+        product_name: it.product_name, qty: it.qty,
+        unit_price: it.unit_price, line_total: it.line_total,
+      });
+    }
+  }
+  // Plain object + item nempel, aman diserialisasi ke komponen client.
+  const orders = rows.map((r) => ({ ...r, items: itemsByOrder[r.id] || [] }));
+
   const [month] = await sql`
     select count(*) filter (where payment_status = 'paid') as paid_count,
            coalesce(sum(total) filter (where payment_status = 'paid'), 0) as revenue,
@@ -55,7 +64,6 @@ export default async function AdminOrders({ searchParams }) {
           <p className="eyebrow">Admin · Orders</p>
           <h1>Data order.</h1>
         </div>
-        <form action={logoutAdmin}><button className="adm__logout" type="submit">Keluar</button></form>
       </div>
 
       <div className="adm__stats">
@@ -77,31 +85,7 @@ export default async function AdminOrders({ searchParams }) {
         <button className="btn btn--ghost" type="submit">Filter</button>
       </form>
 
-      <div className="adm__tablewrap">
-        <table className="adm__table">
-          <thead>
-            <tr>
-              <th>Order</th><th>Nama</th><th>Total</th><th>Pembayaran</th><th>Status</th><th>Resi</th><th>Tanggal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length === 0 && (
-              <tr><td colSpan={7} className="adm__empty">Nggak ada order yang cocok.</td></tr>
-            )}
-            {orders.map((o) => (
-              <tr key={o.order_number}>
-                <td><Link href={`/admin/orders/${encodeURIComponent(o.order_number)}`}>{o.order_number}</Link></td>
-                <td>{o.name}</td>
-                <td>{rupiah(o.total)}</td>
-                <td><span className={`paybadge paybadge--${payKind(o.payment_status)}`}>{PAY_LABEL[o.payment_status] || o.payment_status}</span></td>
-                <td>{STATUS_LABEL[o.status] || o.status}</td>
-                <td>{o.tracking_number || "-"}</td>
-                <td>{new Date(o.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", timeZone: "Asia/Jakarta" })}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <OrdersTable key={`${q}|${pay}`} orders={orders} />
     </div>
   );
 }

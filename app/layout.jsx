@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Analytics from "@/components/Analytics";
@@ -39,10 +40,12 @@ export default function RootLayout({ children }) {
       <body>
         <Analytics />
         <CartProvider>
-          <Header />
+          <SiteChrome><Header /></SiteChrome>
           <main>{children}</main>
-          <Footer />
-          <CartDrawer />
+          <SiteChrome>
+            <Footer />
+            <CartDrawer />
+          </SiteChrome>
         </CartProvider>
       </body>
     </html>
