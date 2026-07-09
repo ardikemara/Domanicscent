@@ -10,17 +10,24 @@ export const metadata = { title: "Parfum · Admin DOMANIC", robots: { index: fal
 async function fetchData() {
   const sql = getSql();
 
-  // Ringkasan penjualan per slug (unit + revenue dihitung dari order LUNAS saja).
+  // Ringkasan penjualan per slug. Lunas = terjual+revenue; pending = potensi.
   const sales = await sql`
     select oi.product_slug,
            coalesce(sum(oi.qty) filter (where o.payment_status = 'paid'), 0)::int as units,
            coalesce(sum(oi.line_total) filter (where o.payment_status = 'paid'), 0)::int as revenue,
-           count(distinct oi.order_id) filter (where o.payment_status = 'paid')::int as order_count
+           count(distinct oi.order_id) filter (where o.payment_status = 'paid')::int as order_count,
+           coalesce(sum(oi.qty) filter (where o.payment_status in ('pending','unpaid')), 0)::int as pending_units,
+           coalesce(sum(oi.line_total) filter (where o.payment_status in ('pending','unpaid')), 0)::int as pending_revenue
     from domanic.order_items oi
     join domanic.orders o on o.id = oi.order_id
     group by oi.product_slug`;
   const salesBySlug = {};
   for (const s of sales) salesBySlug[s.product_slug] = s;
+
+  // Stok awal per parfum (baris cuma ada kalau udah pernah di-set).
+  const stockRows = await sql`select slug, base_stock from domanic.product_stock`;
+  const stockBySlug = {};
+  for (const r of stockRows) stockBySlug[r.slug] = r.base_stock;
 
   // Daftar order per parfum buat drawer (semua status).
   const lines = await sql`
@@ -38,11 +45,15 @@ async function fetchData() {
 
   const items = products.map((p) => {
     const s = salesBySlug[p.slug];
+    const units = s?.units || 0;
+    const baseStock = Object.prototype.hasOwnProperty.call(stockBySlug, p.slug) ? stockBySlug[p.slug] : null;
     return {
       slug: p.slug, name: p.name, persona: p.persona, character: p.character,
       price: p.price, size: p.size, concentration: p.concentration, image: p.image,
       bestWorn: p.bestWorn || null, notes: p.notes || null,
-      units: s?.units || 0, revenue: s?.revenue || 0, orderCount: s?.order_count || 0,
+      units, revenue: s?.revenue || 0, orderCount: s?.order_count || 0,
+      pendingUnits: s?.pending_units || 0, pendingRevenue: s?.pending_revenue || 0,
+      baseStock, stock: baseStock === null ? null : baseStock - units,
       orders: ordersBySlug[p.slug] || [],
     };
   });
@@ -50,14 +61,15 @@ async function fetchData() {
 
   const totalUnits = items.reduce((t, i) => t + i.units, 0);
   const totalRevenue = items.reduce((t, i) => t + i.revenue, 0);
+  const pendingRevenue = items.reduce((t, i) => t + i.pendingRevenue, 0);
   const best = items.find((i) => i.units > 0)?.name || "-";
 
-  return { items, totalUnits, totalRevenue, best };
+  return { items, totalUnits, totalRevenue, pendingRevenue, best };
 }
 
 export default async function AdminParfum() {
   if (!isAdmin()) redirect("/admin/login");
-  const { items, totalUnits, totalRevenue, best } = await fetchData();
+  const { items, totalUnits, totalRevenue, pendingRevenue, best } = await fetchData();
 
   return (
     <div className="wrap adm">
@@ -71,6 +83,7 @@ export default async function AdminParfum() {
       <div className="adm__stats">
         <div className="adm__stat"><span>Total terjual (lunas)</span><b>{totalUnits} pcs</b></div>
         <div className="adm__stat"><span>Revenue produk</span><b>{rupiah(totalRevenue)}</b></div>
+        <div className="adm__stat"><span>Potensi pending</span><b>{rupiah(pendingRevenue)}</b></div>
         <div className="adm__stat"><span>Best seller</span><b>{best}</b></div>
       </div>
 

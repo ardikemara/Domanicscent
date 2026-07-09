@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSql } from "@/lib/db";
+import { products } from "@/lib/products";
 import { checkPassword, createSessionCookie, clearSessionCookie, isAdmin } from "@/lib/adminAuth";
 
 export async function loginAdmin(formData) {
@@ -114,4 +115,18 @@ export async function cancelOrderFromDrawer(orderNumber) {
     update domanic.orders set status = 'cancelled'
     where order_number = ${on} and status in ('pending','paid')`;
   return { ok: true, order: await fetchOrderPlain(sql, on) };
+}
+
+// Set stok awal parfum (dipanggil dari drawer Data Parfum). Return nilai baru.
+export async function setParfumStock(slug, baseStock) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const s = (slug || "").toString().trim();
+  if (!products.some((p) => p.slug === s)) return { ok: false, error: "Parfum tidak dikenal." };
+  const n = Math.max(0, parseInt(baseStock, 10) || 0);
+  const sql = getSql();
+  await sql`
+    insert into domanic.product_stock (slug, base_stock, updated_at)
+    values (${s}, ${n}, now())
+    on conflict (slug) do update set base_stock = ${n}, updated_at = now()`;
+  return { ok: true, base_stock: n };
 }
