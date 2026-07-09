@@ -64,29 +64,23 @@ export async function cancelOrder(formData) {
   redirect(`/admin/orders/${encodeURIComponent(orderNumber)}`);
 }
 
-// ---- Versi drawer: dipanggil dari client, return status (bukan redirect). ----
+// ---- Versi drawer: dipanggil dari client, return {ok, order} (bukan redirect). ----
+// Sengaja TANPA revalidatePath: client update datanya sendiri dari `order` yang
+// di-return, jadi halaman nggak ke-refresh (kalau refresh, drawer ketutup/bounce).
 
-// Ambil detail satu order buat isi drawer (on-demand).
-export async function getOrderDetail(orderNumber) {
-  if (!isAdmin()) return { error: "unauthorized" };
-  const on = (orderNumber || "").toString().trim();
-  if (!on) return { error: "no-order" };
-  const sql = getSql();
+// Ambil satu order + item dalam bentuk plain object (buat di-return ke client).
+async function fetchOrderPlain(sql, on) {
   const rows = await sql`
     select o.*, c.email
     from domanic.orders o
     left join domanic.customers c on c.id = o.customer_id
     where o.order_number = ${on} limit 1`;
-  if (rows.length === 0) return { error: "not-found" };
+  if (rows.length === 0) return null;
   const items = await sql`
     select product_name, qty, unit_price, line_total
     from domanic.order_items
     where order_id = (select id from domanic.orders where order_number = ${on})`;
-  // Ubah ke plain object/array biar aman diserialisasi ke komponen client.
-  return {
-    order: { ...rows[0] },
-    items: items.map((it) => ({ ...it })),
-  };
+  return { ...rows[0], items: items.map((it) => ({ ...it })) };
 }
 
 export async function markShippedFromDrawer(orderNumber, resi) {
@@ -99,8 +93,7 @@ export async function markShippedFromDrawer(orderNumber, resi) {
     update domanic.orders
     set status = 'shipped', tracking_number = ${tn}, shipped_at = now()
     where order_number = ${on} and payment_status = 'paid'`;
-  revalidatePath("/admin/orders");
-  return { ok: true };
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
 }
 
 export async function markCompletedFromDrawer(orderNumber) {
@@ -110,8 +103,7 @@ export async function markCompletedFromDrawer(orderNumber) {
   await sql`
     update domanic.orders set status = 'completed'
     where order_number = ${on} and status = 'shipped'`;
-  revalidatePath("/admin/orders");
-  return { ok: true };
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
 }
 
 export async function cancelOrderFromDrawer(orderNumber) {
@@ -121,6 +113,5 @@ export async function cancelOrderFromDrawer(orderNumber) {
   await sql`
     update domanic.orders set status = 'cancelled'
     where order_number = ${on} and status in ('pending','paid')`;
-  revalidatePath("/admin/orders");
-  return { ok: true };
+  return { ok: true, order: await fetchOrderPlain(sql, on) };
 }
