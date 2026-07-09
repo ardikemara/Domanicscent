@@ -741,6 +741,12 @@ footer{background:var(--charcoal);color:var(--beige)}
 .odrawer h2{font-family:var(--disp);font-weight:400;letter-spacing:.06em;margin:4px 0 18px;font-size:1.2rem;color:var(--umber)}
 .odrawer .adm__card{margin-bottom:14px}
 .odrawer .adm__action input{padding:10px 14px;border:1px solid #d9cfc0;border-radius:10px;font:inherit;font-size:.85rem;background:#fff}
+.odrawer__field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.odrawer__field label{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--taupe)}
+.odrawer__field input,.odrawer__field select{padding:10px 12px;border:1px solid #d9cfc0;border-radius:9px;font:inherit;font-size:.88rem;background:#fff}
+.odrawer__row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.odrawer__check{display:flex;align-items:center;gap:8px;font-size:.88rem;margin:4px 0 12px;cursor:pointer}
+.odrawer__check input{width:16px;height:16px}
 .admshell__logout{width:100%;background:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:10px;font:inherit;font-size:.8rem;color:var(--off-white);cursor:pointer;transition:border-color .2s}
 .admshell__logout:hover{border-color:var(--off-white)}
 .admshell__main{flex:1;min-width:0}

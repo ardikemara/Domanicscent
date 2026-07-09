@@ -130,3 +130,61 @@ export async function setParfumStock(slug, baseStock) {
     on conflict (slug) do update set base_stock = ${n}, updated_at = now()`;
   return { ok: true, base_stock: n };
 }
+
+// ---- Promo CRUD (drawer Data Promo). Return {ok, promo} biar client patch state. ----
+
+export async function savePromo(input) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const code = (input?.code || "").toString().trim().toUpperCase();
+  if (!code) return { ok: false, error: "Kode wajib diisi." };
+  const type = input?.type === "fixed" ? "fixed" : "percent";
+  const value = parseInt(input?.value, 10);
+  if (!Number.isFinite(value) || value <= 0) return { ok: false, error: "Nilai diskon harus lebih dari 0." };
+  if (type === "percent" && value > 100) return { ok: false, error: "Diskon persen maksimal 100." };
+  const minSpend = Math.max(0, parseInt(input?.min_spend, 10) || 0);
+  const active = !!input?.active;
+  const startsAt = input?.starts_at ? input.starts_at : null;
+  const endsAt = input?.ends_at ? input.ends_at : null;
+  const usageLimit = input?.usage_limit ? Math.max(1, parseInt(input.usage_limit, 10)) : null;
+  const id = input?.id || null;
+  const sql = getSql();
+
+  const dup = await sql`
+    select id from domanic.promo_codes
+    where upper(code) = ${code} and (${id}::uuid is null or id <> ${id}) limit 1`;
+  if (dup.length) return { ok: false, error: "Kode itu udah dipakai promo lain." };
+
+  let row;
+  if (id) {
+    [row] = await sql`
+      update domanic.promo_codes set
+        code = ${code}, type = ${type}, value = ${value}, min_spend = ${minSpend},
+        active = ${active}, starts_at = ${startsAt}, ends_at = ${endsAt}, usage_limit = ${usageLimit}
+      where id = ${id}
+      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+    if (!row) return { ok: false, error: "Promo nggak ketemu." };
+  } else {
+    [row] = await sql`
+      insert into domanic.promo_codes (code, type, value, min_spend, active, starts_at, ends_at, usage_limit)
+      values (${code}, ${type}, ${value}, ${minSpend}, ${active}, ${startsAt}, ${endsAt}, ${usageLimit})
+      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+  }
+  return { ok: true, promo: { ...row } };
+}
+
+export async function togglePromo(id, active) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const sql = getSql();
+  const [row] = await sql`
+    update domanic.promo_codes set active = ${!!active} where id = ${id}
+    returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+  if (!row) return { ok: false, error: "Promo nggak ketemu." };
+  return { ok: true, promo: { ...row } };
+}
+
+export async function deletePromo(id) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const sql = getSql();
+  await sql`delete from domanic.promo_codes where id = ${id}`;
+  return { ok: true, id };
+}
