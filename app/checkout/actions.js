@@ -59,35 +59,50 @@ export async function quoteShipping(destinationId, items) {
 }
 
 // Validate a promo code against the DB. Returns discount in rupiah.
-export async function checkPromo(code, subtotal) {
+// lines: [{ slug, lineTotal }] opsional, buat promo yang cuma berlaku ke produk tertentu.
+export async function checkPromo(code, subtotal, lines) {
   const clean = (code || "").trim().toUpperCase();
-  if (!clean) return { valid: false, discount: 0, message: "" };
+  if (!clean) return { valid: false, discount: 0, freeship: false, message: "" };
   try {
     const sql = getSql();
     const rows = await sql`
-      select code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count
+      select code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, product_slugs
       from domanic.promo_codes
       where upper(code) = ${clean} limit 1`;
-    if (rows.length === 0) return { valid: false, discount: 0, message: "Kode promo nggak ketemu." };
+    if (rows.length === 0) return { valid: false, discount: 0, freeship: false, message: "Kode promo nggak ketemu." };
     const promo = rows[0];
     const now = new Date();
-    if (!promo.active) return { valid: false, discount: 0, message: "Kode promo udah nggak aktif." };
+    if (!promo.active) return { valid: false, discount: 0, freeship: false, message: "Kode promo udah nggak aktif." };
     if (promo.starts_at && new Date(promo.starts_at) > now)
-      return { valid: false, discount: 0, message: "Kode promo belum berlaku." };
+      return { valid: false, discount: 0, freeship: false, message: "Kode promo belum berlaku." };
     if (promo.ends_at && new Date(promo.ends_at) < now)
-      return { valid: false, discount: 0, message: "Kode promo udah lewat." };
+      return { valid: false, discount: 0, freeship: false, message: "Kode promo udah lewat." };
     if (promo.usage_limit != null && promo.used_count >= promo.usage_limit)
-      return { valid: false, discount: 0, message: "Kuota promo udah habis." };
+      return { valid: false, discount: 0, freeship: false, message: "Kuota promo udah habis." };
     if (subtotal < promo.min_spend)
-      return { valid: false, discount: 0, message: `Minimal belanja Rp ${promo.min_spend.toLocaleString("id-ID")}.` };
+      return { valid: false, discount: 0, freeship: false, message: `Minimal belanja Rp ${promo.min_spend.toLocaleString("id-ID")}.` };
 
-    let discount =
-      promo.type === "percent" ? Math.round((subtotal * promo.value) / 100) : promo.value;
+    // Promo yang dibatasi ke produk tertentu: diskon dihitung dari harga produk itu aja.
+    const slugs = Array.isArray(promo.product_slugs) ? promo.product_slugs : [];
+    let base = subtotal;
+    if (slugs.length > 0) {
+      base = Array.isArray(lines)
+        ? lines.filter((l) => slugs.includes(l.slug)).reduce((s, l) => s + (l.lineTotal || 0), 0)
+        : 0;
+      if (base <= 0)
+        return { valid: false, discount: 0, freeship: false, message: "Promo ini cuma buat produk tertentu, nggak ada di keranjang." };
+    }
+
+    if (promo.type === "freeship") {
+      return { valid: true, discount: 0, freeship: true, code: clean, message: `Promo ${clean} kepakai (gratis ongkir).` };
+    }
+
+    let discount = promo.type === "percent" ? Math.round((base * promo.value) / 100) : Math.min(promo.value, base);
     if (discount > subtotal) discount = subtotal;
     const label = promo.type === "percent" ? `${promo.value}% off` : `Rp ${promo.value.toLocaleString("id-ID")} off`;
-    return { valid: true, discount, code: clean, message: `Promo ${clean} kepakai (${label}).` };
+    return { valid: true, discount, freeship: false, code: clean, message: `Promo ${clean} kepakai (${label}).` };
   } catch (e) {
-    return { valid: false, discount: 0, message: "Gagal cek promo, coba lagi." };
+    return { valid: false, discount: 0, freeship: false, message: "Gagal cek promo, coba lagi." };
   }
 }
 
@@ -116,13 +131,13 @@ export async function createOrder(payload) {
     }
     if (lines.length === 0) return { ok: false, error: "Produk nggak valid." };
 
-    const promo = await checkPromo(payload?.promoCode, subtotal);
+    const promo = await checkPromo(payload?.promoCode, subtotal, lines);
     const discount = promo.valid ? promo.discount : 0;
     const promoApplied = promo.valid ? promo.code : null;
     const destinationId = payload?.destination?.id ? parseInt(payload.destination.id, 10) : null;
     const destinationLabel = (payload?.destination?.label || "").slice(0, 200) || null;
     const ship = await shippingQuoteFor(subtotal, totalQty, destinationId);
-    const shipping = ship.cost;
+    const shipping = (promo.valid && promo.freeship) ? 0 : ship.cost;
     const total = subtotal - discount + shipping;
 
     const sql = getSql();

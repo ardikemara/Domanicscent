@@ -14,7 +14,7 @@ export default function CheckoutPage() {
 
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", city: "", note: "" });
   const [promo, setPromo] = useState("");
-  const [promoState, setPromoState] = useState({ discount: 0, message: "", valid: false });
+  const [promoState, setPromoState] = useState({ discount: 0, message: "", valid: false, freeship: false });
   const [checking, setChecking] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -64,14 +64,16 @@ export default function CheckoutPage() {
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
-  const shipping = subtotal >= FREE_SHIP_MIN ? 0 : ship.cost;
+  const promoFreeship = promoState.valid && promoState.freeship;
+  const shipping = (subtotal >= FREE_SHIP_MIN || promoFreeship) ? 0 : ship.cost;
   const discount = promoState.valid ? promoState.discount : 0;
   const total = Math.max(0, subtotal - discount + (shipping || 0));
 
   async function applyPromo() {
     setChecking(true);
-    const res = await checkPromo(promo, subtotal);
-    setPromoState({ discount: res.discount || 0, message: res.message || "", valid: !!res.valid });
+    const lines = items.map((it) => ({ slug: it.slug, lineTotal: it.price * it.qty }));
+    const res = await checkPromo(promo, subtotal, lines);
+    setPromoState({ discount: res.discount || 0, message: res.message || "", valid: !!res.valid, freeship: !!res.freeship });
     setChecking(false);
   }
 
@@ -201,7 +203,7 @@ export default function CheckoutPage() {
             <div>
               <span>Ongkir{ship.etd ? ` (JNE, est. ${ship.etd} hari)` : " (JNE)"}</span>
               <span>
-                {subtotal >= FREE_SHIP_MIN
+                {subtotal >= FREE_SHIP_MIN || promoFreeship
                   ? "Gratis"
                   : ship.loading
                   ? "Menghitung..."
