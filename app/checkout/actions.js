@@ -4,6 +4,7 @@ import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { createSnapTransaction } from "@/lib/midtrans";
 import { searchDestination, quoteJne } from "@/lib/rajaongkir";
+import { sendEmail, personaResultEmail } from "@/lib/email";
 
 const SHIPPING_FALLBACK = 25000;   // dipakai kalau API ongkir gagal
 const FREE_SHIP_MIN = 500000;
@@ -278,8 +279,21 @@ export async function subscribeLead(email, persona, source) {
   try {
     const sql = getSql();
     await sql`insert into domanic.leads (source, email, persona) values (${src}, ${clean}, ${persona || null})`;
-    return { ok: true };
   } catch (e) {
     return { ok: false, error: "Gagal subscribe, coba lagi." };
   }
+
+  // Kirim email hasil quiz (best-effort). Gagal kirim nggak bikin lead gagal.
+  if (src === "persona" && persona) {
+    try {
+      const product = products.find((p) => p.slug === persona);
+      if (product) {
+        const { subject, html } = personaResultEmail(product);
+        await sendEmail({ to: clean, subject, html });
+      }
+    } catch (e) {
+      // diamkan, lead tetap tersimpan
+    }
+  }
+  return { ok: true };
 }
