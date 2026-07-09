@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { products } from "@/lib/products";
+import { subscribeLead } from "@/app/checkout/actions";
 
 // answer keys map to product slug
 const QUESTIONS = [
@@ -48,6 +49,20 @@ export default function PersonaQuiz() {
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState({});
   const [done, setDone] = useState(false);
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadMsg, setLeadMsg] = useState("");
+  const [leadDone, setLeadDone] = useState(false);
+  const [leadBusy, setLeadBusy] = useState(false);
+
+  async function saveLead(personaSlug) {
+    if (!leadEmail.includes("@")) { setLeadMsg("Email-nya belum bener nih."); return; }
+    setLeadBusy(true);
+    setLeadMsg("");
+    const res = await subscribeLead(leadEmail, personaSlug, "persona");
+    setLeadBusy(false);
+    if (res.ok) { setLeadDone(true); setLeadMsg("Makasih! Tips wangi & promo bakal mampir ke email kamu."); }
+    else setLeadMsg(res.error || "Gagal, coba lagi.");
+  }
 
   const choose = (slug) => {
     const next = { ...scores, [slug]: (scores[slug] || 0) + 1 };
@@ -90,6 +105,28 @@ export default function PersonaQuiz() {
           <Link className="btn btn--solid" href={`/persona/${p.slug}`}>Kenalan sama {p.name}</Link>
           <Link className="btn btn--ghost" href="/#collection">Lihat semua</Link>
         </div>
+
+        {!leadDone ? (
+          <div className="qz__lead">
+            <p className="qz__leadtitle">Simpan hasilmu, dapet tips wangi & promo</p>
+            <div className="qz__leadform">
+              <input
+                type="email"
+                placeholder="email@kamu.com"
+                value={leadEmail}
+                onChange={(e) => setLeadEmail(e.target.value)}
+                aria-label="Email"
+              />
+              <button className="btn btn--solid" type="button" disabled={leadBusy} onClick={() => saveLead(p.slug)}>
+                {leadBusy ? "..." : "Kirim"}
+              </button>
+            </div>
+            {leadMsg && <p className="qz__leadmsg">{leadMsg}</p>}
+          </div>
+        ) : (
+          <p className="qz__leadmsg">{leadMsg}</p>
+        )}
+
         <button className="qz__retry" type="button" onClick={reset}>Ulangi kuis</button>
       </div>
     );
