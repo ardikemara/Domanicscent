@@ -82,10 +82,10 @@ export default function OrdersTable({ orders }) {
   }, [selected]);
 
   const drawer = o && (
-    <div className="drawer" role="dialog" aria-modal="true" aria-label="Detail order">
-      <div className="drawer__overlay" onClick={close} />
-      <aside className="drawer__panel">
-        <button className="drawer__close" type="button" onClick={close} aria-label="Tutup">×</button>
+    <div className="odrawer" role="dialog" aria-modal="true" aria-label="Detail order">
+      <div className="odrawer__overlay" onClick={close} />
+      <aside className="odrawer__panel">
+        <button className="odrawer__close" type="button" onClick={close} aria-label="Tutup">×</button>
 
         <p className="eyebrow">Detail order</p>
         <h2>{o.order_number}</h2>
