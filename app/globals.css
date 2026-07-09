@@ -338,7 +338,7 @@ footer{background:var(--charcoal);color:var(--beige)}
 .paybadge--paid{background:#e6efe6;color:#2f5d3a}
 .paybadge--pending{background:#f4ead9;color:#8a6a3b}
 .paybadge--failed{background:#f3e3e0;color:#8a4636}
-.thanks__paybtn{margin-top:14px}
+.thanks__actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:26px}
 /* pay page (embedded snap) */
 .pay{padding-top:56px;padding-bottom:80px}
 .pay__lead{color:var(--taupe);margin:10px 0 30px;max-width:560px}

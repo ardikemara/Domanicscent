@@ -99,16 +99,18 @@ export default async function ThankYou({ searchParams }) {
                 {paymentLabel(data.order.payment_status)}
               </span>
             </p>
-            {!isPaid(data.order.payment_status) && (
-              <div className="thanks__paybtn">
-                <Link className="btn btn--solid" href={`/pay/${encodeURIComponent(data.order.order_number)}`}>
-                  Bayar sekarang
-                </Link>
-              </div>
-            )}
           </div>
 
-          <Link className="btn btn--solid" href="/#collection">Lanjut belanja</Link>
+          <div className="thanks__actions">
+            {!isPaid(data.order.payment_status) && (
+              <Link className="btn btn--solid" href={`/pay/${encodeURIComponent(data.order.order_number)}`}>
+                Bayar sekarang
+              </Link>
+            )}
+            <Link className={`btn ${isPaid(data.order.payment_status) ? "btn--solid" : "btn--ghost"}`} href="/#collection">
+              Lanjut belanja
+            </Link>
+          </div>
         </>
       )}
     </div>
