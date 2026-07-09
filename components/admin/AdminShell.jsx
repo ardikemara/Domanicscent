@@ -10,7 +10,7 @@ import { logoutAdmin } from "@/app/admin/actions";
 const NAV = [
   { href: "/admin/orders", label: "Data Order", match: "/admin/orders", ready: true },
   { href: "/admin/customers", label: "Data Customer", match: "/admin/customers", ready: true },
-  { label: "Data Parfum", ready: false },
+  { href: "/admin/parfum", label: "Data Parfum", match: "/admin/parfum", ready: true },
   { label: "Promo", ready: false },
   { label: "Analytic Promo", ready: false },
   { label: "Data Lead", ready: false },
