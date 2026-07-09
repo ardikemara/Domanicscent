@@ -272,13 +272,17 @@ export async function getSnapToken(orderNumber) {
 }
 
 // Newsletter / lead capture
-export async function subscribeLead(email, persona, source) {
+export async function subscribeLead(email, persona, source, name, phone) {
   const clean = (email || "").trim();
   if (!clean || !clean.includes("@")) return { ok: false, error: "Email nggak valid." };
   const src = source === "persona" ? "persona" : "newsletter";
+  const nm = (name || "").toString().trim().slice(0, 120) || null;
+  const ph = (phone || "").toString().trim().slice(0, 40) || null;
   try {
     const sql = getSql();
-    await sql`insert into domanic.leads (source, email, persona) values (${src}, ${clean}, ${persona || null})`;
+    await sql`
+      insert into domanic.leads (source, email, persona, name, phone)
+      values (${src}, ${clean}, ${persona || null}, ${nm}, ${ph})`;
   } catch (e) {
     return { ok: false, error: "Gagal subscribe, coba lagi." };
   }
@@ -288,7 +292,7 @@ export async function subscribeLead(email, persona, source) {
     try {
       const product = products.find((p) => p.slug === persona);
       if (product) {
-        const { subject, html } = personaResultEmail(product);
+        const { subject, html } = personaResultEmail(product, nm);
         await sendEmail({ to: clean, subject, html });
       }
     } catch (e) {

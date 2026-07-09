@@ -49,7 +49,9 @@ export default function PersonaQuiz() {
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState({});
   const [done, setDone] = useState(false);
+  const [leadName, setLeadName] = useState("");
   const [leadEmail, setLeadEmail] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
   const [leadMsg, setLeadMsg] = useState("");
   const [leadDone, setLeadDone] = useState(false);
   const [leadBusy, setLeadBusy] = useState(false);
@@ -58,7 +60,7 @@ export default function PersonaQuiz() {
     if (!leadEmail.includes("@")) { setLeadMsg("Email-nya belum bener nih."); return; }
     setLeadBusy(true);
     setLeadMsg("");
-    const res = await subscribeLead(leadEmail, personaSlug, "persona");
+    const res = await subscribeLead(leadEmail, personaSlug, "persona", leadName, leadPhone);
     setLeadBusy(false);
     if (res.ok) { setLeadDone(true); setLeadMsg("Makasih! Tips wangi & promo bakal mampir ke email kamu."); }
     else setLeadMsg(res.error || "Gagal, coba lagi.");
@@ -111,11 +113,25 @@ export default function PersonaQuiz() {
             <p className="qz__leadtitle">Simpan hasilmu, dapet tips wangi & promo</p>
             <div className="qz__leadform">
               <input
+                type="text"
+                placeholder="Nama (opsional)"
+                value={leadName}
+                onChange={(e) => setLeadName(e.target.value)}
+                aria-label="Nama"
+              />
+              <input
                 type="email"
                 placeholder="email@kamu.com"
                 value={leadEmail}
                 onChange={(e) => setLeadEmail(e.target.value)}
                 aria-label="Email"
+              />
+              <input
+                type="tel"
+                placeholder="No WhatsApp (opsional)"
+                value={leadPhone}
+                onChange={(e) => setLeadPhone(e.target.value)}
+                aria-label="No WhatsApp"
               />
               <button className="btn btn--solid" type="button" disabled={leadBusy} onClick={() => saveLead(p.slug)}>
                 {leadBusy ? "..." : "Kirim"}
