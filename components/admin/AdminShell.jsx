@@ -5,9 +5,15 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logoutAdmin } from "@/app/admin/actions";
 
-// Nav admin. Tambah item baru di sini kalau ada modul baru (produk, promo, dst).
+// Nav admin ngikutin roadmap. Modul yang belum jadi tampil "segera" (non-klik).
+// Kalau modulnya kelar, kasih href + match, terus set ready: true.
 const NAV = [
-  { href: "/admin/orders", label: "Orders", match: "/admin/orders" },
+  { href: "/admin/orders", label: "Data Order", match: "/admin/orders", ready: true },
+  { label: "Data Customer", ready: false },
+  { label: "Data Parfum", ready: false },
+  { label: "Promo", ready: false },
+  { label: "Analytic Promo", ready: false },
+  { label: "Data Lead", ready: false },
 ];
 
 export default function AdminShell({ children }) {
@@ -36,6 +42,14 @@ export default function AdminShell({ children }) {
 
         <nav className="admshell__nav">
           {NAV.map((n) => {
+            if (!n.ready) {
+              return (
+                <span key={n.label} className="admshell__link admshell__link--soon">
+                  {n.label}
+                  <em className="admshell__badge">segera</em>
+                </span>
+              );
+            }
             const active = pathname.startsWith(n.match);
             return (
               <Link

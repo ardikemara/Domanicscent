@@ -725,6 +725,9 @@ footer{background:var(--charcoal);color:var(--beige)}
 .admshell__link{padding:11px 14px;border-radius:9px;font-size:.85rem;color:var(--off-white);opacity:.66;transition:background .2s,opacity .2s}
 .admshell__link:hover{opacity:1;background:rgba(255,255,255,.06)}
 .admshell__link--active{opacity:1;background:var(--umber)}
+.admshell__link--soon{display:flex;align-items:center;justify-content:space-between;gap:8px;opacity:.34;cursor:default}
+.admshell__link--soon:hover{opacity:.34;background:none}
+.admshell__badge{font-style:normal;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.14);color:var(--off-white);padding:3px 7px;border-radius:999px}
 .admshell__logout{width:100%;background:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:10px;font:inherit;font-size:.8rem;color:var(--off-white);cursor:pointer;transition:border-color .2s}
 .admshell__logout:hover{border-color:var(--off-white)}
 .admshell__main{flex:1;min-width:0}
