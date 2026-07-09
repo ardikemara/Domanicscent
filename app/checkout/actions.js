@@ -127,10 +127,30 @@ export async function createOrder(payload) {
     let orderNumber = null;
 
     await sql.begin(async (tx) => {
-      const [cust] = await tx`
-        insert into domanic.customers (name, phone, email, address, city, notes)
-        values (${c.name}, ${c.phone}, ${c.email || null}, ${c.address}, ${c.city || null}, ${c.note || null})
-        returning id`;
+      // Cari customer lama (dedup by email, fallback HP) biar 1 orang = 1 customer.
+      // Kalau ketemu, reuse + update kontak ke yang terbaru; kalau nggak, insert baru.
+      const emailKey = (c.email || "").trim().toLowerCase() || null;
+      const phoneKey = (c.phone || "").trim() || null;
+      const existing = await tx`
+        select id from domanic.customers
+        where (${emailKey}::text is not null and lower(trim(email)) = ${emailKey})
+           or (${emailKey}::text is null and ${phoneKey}::text is not null and trim(phone) = ${phoneKey})
+        order by created_at desc limit 1`;
+      let custId;
+      if (existing.length) {
+        custId = existing[0].id;
+        await tx`
+          update domanic.customers
+          set name = ${c.name}, phone = ${c.phone}, email = ${c.email || null},
+              address = ${c.address}, city = ${c.city || null}, notes = ${c.note || null}
+          where id = ${custId}`;
+      } else {
+        const [cust] = await tx`
+          insert into domanic.customers (name, phone, email, address, city, notes)
+          values (${c.name}, ${c.phone}, ${c.email || null}, ${c.address}, ${c.city || null}, ${c.note || null})
+          returning id`;
+        custId = cust.id;
+      }
 
       const [order] = await tx`
         insert into domanic.orders
@@ -140,7 +160,7 @@ export async function createOrder(payload) {
            shipping_destination_id, shipping_courier, shipping_etd)
         values
           ('DMN-' || to_char(now() at time zone 'Asia/Jakarta','YYYYMMDD') || '-' || lpad(nextval('domanic.order_seq')::text, 4, '0'),
-           ${cust.id}, 'pending', 'unpaid', 'midtrans',
+           ${custId}, 'pending', 'unpaid', 'midtrans',
            ${subtotal}, ${discount}, ${shipping}, ${total}, ${promoApplied},
            ${c.name}, ${c.phone}, ${c.address}, ${destinationLabel || c.city || null}, ${c.note || null},
            ${destinationId}, ${ship.service ? 'jne' : null}, ${ship.etd || null})
