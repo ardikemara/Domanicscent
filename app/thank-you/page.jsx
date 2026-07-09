@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
-import PayNowButton from "@/components/payment/PayNowButton";
 
 function isPaid(s) {
   return s === "paid";
@@ -101,7 +100,11 @@ export default async function ThankYou({ searchParams }) {
               </span>
             </p>
             {!isPaid(data.order.payment_status) && (
-              <PayNowButton orderNumber={data.order.order_number} />
+              <div className="thanks__paybtn">
+                <Link className="btn btn--solid" href={`/pay/${encodeURIComponent(data.order.order_number)}`}>
+                  Bayar sekarang
+                </Link>
+              </div>
             )}
           </div>
 

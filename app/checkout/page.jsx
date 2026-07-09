@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart, rupiah } from "@/components/cart/CartContext";
 import { createOrder, checkPromo, findDestinations, quoteShipping } from "@/app/checkout/actions";
-import { paySnap } from "@/components/payment/snap";
 
 const FREE_SHIP_MIN = 500000;
 
@@ -100,25 +99,8 @@ export default function CheckoutPage() {
     }
 
     clear();
-    const goThanks = () => router.push(`/thank-you?order=${encodeURIComponent(res.orderNumber)}`);
-
-    if (!res.snapToken) {
-      // Snap gagal dibuat; order tetap tersimpan, customer bisa bayar dari thank-you page.
-      goThanks();
-      return;
-    }
-
-    try {
-      await paySnap(res.snapToken, {
-        onSuccess: goThanks,
-        onPending: goThanks,
-        onError: goThanks,
-        onClose: goThanks,
-      });
-      setSubmitting(false);
-    } catch {
-      goThanks();
-    }
+    // Semua pembayaran sekarang di halaman embedded /pay/[order].
+    router.push(`/pay/${encodeURIComponent(res.orderNumber)}`);
   }
 
   if (items.length === 0) {

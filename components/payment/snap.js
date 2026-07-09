@@ -30,8 +30,9 @@ export function loadSnap() {
   });
 }
 
-// Buka popup Snap. callbacks: { onSuccess, onPending, onError, onClose }
-export async function paySnap(token, callbacks) {
+// Render Snap embedded ke dalam elemen halaman (bukan popup).
+// embedId = id elemen container.
+export async function embedSnap(token, embedId, callbacks) {
   const snap = await loadSnap();
-  snap.pay(token, callbacks || {});
+  snap.embed(token, { embedId, ...(callbacks || {}) });
 }
