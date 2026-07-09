@@ -6,7 +6,7 @@ export default function robots() {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/checkout", "/thank-you"],
+        disallow: ["/checkout", "/thank-you", "/pay", "/admin"],
       },
     ],
     sitemap: `${BASE}/sitemap.xml`,
