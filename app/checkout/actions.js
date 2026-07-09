@@ -65,7 +65,7 @@ export async function checkPromo(code, subtotal) {
   try {
     const sql = getSql();
     const rows = await sql`
-      select code, type, value, min_spend, active, starts_at, ends_at
+      select code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count
       from domanic.promo_codes
       where upper(code) = ${clean} limit 1`;
     if (rows.length === 0) return { valid: false, discount: 0, message: "Kode promo nggak ketemu." };
@@ -76,6 +76,8 @@ export async function checkPromo(code, subtotal) {
       return { valid: false, discount: 0, message: "Kode promo belum berlaku." };
     if (promo.ends_at && new Date(promo.ends_at) < now)
       return { valid: false, discount: 0, message: "Kode promo udah lewat." };
+    if (promo.usage_limit != null && promo.used_count >= promo.usage_limit)
+      return { valid: false, discount: 0, message: "Kuota promo udah habis." };
     if (subtotal < promo.min_spend)
       return { valid: false, discount: 0, message: `Minimal belanja Rp ${promo.min_spend.toLocaleString("id-ID")}.` };
 

@@ -11,7 +11,7 @@ const NAV = [
   { href: "/admin/orders", label: "Data Order", match: "/admin/orders", ready: true },
   { href: "/admin/customers", label: "Data Customer", match: "/admin/customers", ready: true },
   { href: "/admin/parfum", label: "Data Parfum", match: "/admin/parfum", ready: true },
-  { label: "Promo", ready: false },
+  { href: "/admin/promo", label: "Promo", match: "/admin/promo", ready: true },
   { label: "Analytic Promo", ready: false },
   { label: "Data Lead", ready: false },
 ];
