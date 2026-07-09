@@ -1,26 +1,11 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
 import { isAdmin } from "@/lib/adminAuth";
+import OrdersTable from "@/components/admin/OrdersTable";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders · Admin DOMANIC", robots: { index: false, follow: false } };
-
-const PAY_LABEL = {
-  paid: "Lunas", pending: "Menunggu", unpaid: "Belum bayar",
-  expired: "Kedaluwarsa", failed: "Gagal", refunded: "Refund",
-};
-const STATUS_LABEL = {
-  pending: "Baru", paid: "Siap kirim", shipped: "Dikirim",
-  completed: "Selesai", cancelled: "Dibatalkan",
-};
-
-function payKind(s) {
-  if (s === "paid") return "paid";
-  if (s === "pending" || s === "unpaid") return "pending";
-  return "failed";
-}
 
 async function fetchData(q, pay) {
   const sql = getSql();
@@ -75,31 +60,7 @@ export default async function AdminOrders({ searchParams }) {
         <button className="btn btn--ghost" type="submit">Filter</button>
       </form>
 
-      <div className="adm__tablewrap">
-        <table className="adm__table">
-          <thead>
-            <tr>
-              <th>Order</th><th>Nama</th><th>Total</th><th>Pembayaran</th><th>Status</th><th>Resi</th><th>Tanggal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length === 0 && (
-              <tr><td colSpan={7} className="adm__empty">Nggak ada order yang cocok.</td></tr>
-            )}
-            {orders.map((o) => (
-              <tr key={o.order_number}>
-                <td><Link href={`/admin/orders/${encodeURIComponent(o.order_number)}`}>{o.order_number}</Link></td>
-                <td>{o.name}</td>
-                <td>{rupiah(o.total)}</td>
-                <td><span className={`paybadge paybadge--${payKind(o.payment_status)}`}>{PAY_LABEL[o.payment_status] || o.payment_status}</span></td>
-                <td>{STATUS_LABEL[o.status] || o.status}</td>
-                <td>{o.tracking_number || "-"}</td>
-                <td>{new Date(o.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", timeZone: "Asia/Jakarta" })}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <OrdersTable orders={orders} />
     </div>
   );
 }
