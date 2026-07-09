@@ -45,8 +45,6 @@ export default function OrdersTable({ orders }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-  // Sinkron kalau props berubah (filter/search = navigasi baru).
-  useEffect(() => { setRows(orders); }, [orders]);
 
   const o = selected ? rows.find((r) => r.order_number === selected) : null;
   const waNumber = o ? (o.phone || "").replace(/[^0-9]/g, "").replace(/^0/, "62") : "";

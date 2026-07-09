@@ -85,7 +85,7 @@ export default async function AdminOrders({ searchParams }) {
         <button className="btn btn--ghost" type="submit">Filter</button>
       </form>
 
-      <OrdersTable orders={orders} />
+      <OrdersTable key={`${q}|${pay}`} orders={orders} />
     </div>
   );
 }
