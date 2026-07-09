@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
 import { isAdmin } from "@/lib/adminAuth";
-import { logoutAdmin } from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders · Admin DOMANIC", robots: { index: false, follow: false } };
@@ -55,7 +54,6 @@ export default async function AdminOrders({ searchParams }) {
           <p className="eyebrow">Admin · Orders</p>
           <h1>Data order.</h1>
         </div>
-        <form action={logoutAdmin}><button className="adm__logout" type="submit">Keluar</button></form>
       </div>
 
       <div className="adm__stats">
