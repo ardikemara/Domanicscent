@@ -13,7 +13,7 @@ const NAV = [
   { href: "/admin/parfum", label: "Data Parfum", match: "/admin/parfum", ready: true },
   { href: "/admin/promo", label: "Promo", match: "/admin/promo", ready: true },
   { href: "/admin/analytic-promo", label: "Analytic Promo", match: "/admin/analytic-promo", ready: true },
-  { label: "Data Lead", ready: false },
+  { href: "/admin/lead", label: "Data Lead", match: "/admin/lead", ready: true },
 ];
 
 export default function AdminShell({ children }) {

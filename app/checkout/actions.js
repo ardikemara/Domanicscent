@@ -271,12 +271,13 @@ export async function getSnapToken(orderNumber) {
 }
 
 // Newsletter / lead capture
-export async function subscribeLead(email, persona) {
+export async function subscribeLead(email, persona, source) {
   const clean = (email || "").trim();
   if (!clean || !clean.includes("@")) return { ok: false, error: "Email nggak valid." };
+  const src = source === "persona" ? "persona" : "newsletter";
   try {
     const sql = getSql();
-    await sql`insert into domanic.leads (source, email, persona) values ('newsletter', ${clean}, ${persona || null})`;
+    await sql`insert into domanic.leads (source, email, persona) values (${src}, ${clean}, ${persona || null})`;
     return { ok: true };
   } catch (e) {
     return { ok: false, error: "Gagal subscribe, coba lagi." };
