@@ -7,7 +7,7 @@ import { savePromo, deletePromo } from "@/app/admin/actions";
 
 const EMPTY = {
   code: "", type: "percent", value: "", min_spend: "0",
-  active: true, starts_at: "", ends_at: "", usage_limit: "",
+  active: true, starts_at: "", ends_at: "", usage_limit: "", product_slugs: [],
 };
 
 function dateInput(ts) {
@@ -19,6 +19,7 @@ function fmt(ts) {
   return new Date(ts).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" });
 }
 function discountLabel(p) {
+  if (p.type === "freeship") return "Gratis ongkir";
   return p.type === "percent" ? `${p.value}%` : rupiah(p.value);
 }
 function periodLabel(p) {
@@ -27,7 +28,10 @@ function periodLabel(p) {
   return `${s || "…"} – ${e || "…"}`;
 }
 
-export default function PromoTable({ promos }) {
+export default function PromoTable({ promos, productList = [] }) {
+  const nameBySlug = {};
+  productList.forEach((pr) => { nameBySlug[pr.slug] = pr.name; });
+
   const [rows, setRows] = useState(promos);
   const [mode, setMode] = useState(null); // null | "new" | "edit"
   const [current, setCurrent] = useState(null); // id saat edit
@@ -40,6 +44,12 @@ export default function PromoTable({ promos }) {
   useEffect(() => setMounted(true), []);
 
   function set(k, v) { setForm((f) => ({ ...f, [k]: v })); }
+  function toggleSlug(slug) {
+    setForm((f) => {
+      const has = f.product_slugs.includes(slug);
+      return { ...f, product_slugs: has ? f.product_slugs.filter((s) => s !== slug) : [...f.product_slugs, slug] };
+    });
+  }
 
   function openNew() {
     setMode("new"); setCurrent(null); setForm(EMPTY); setErr(""); setConfirmDel(false);
@@ -50,6 +60,7 @@ export default function PromoTable({ promos }) {
       code: p.code, type: p.type, value: String(p.value), min_spend: String(p.min_spend),
       active: p.active, starts_at: dateInput(p.starts_at), ends_at: dateInput(p.ends_at),
       usage_limit: p.usage_limit != null ? String(p.usage_limit) : "",
+      product_slugs: Array.isArray(p.product_slugs) ? p.product_slugs : [],
     });
   }
   function close() { setMode(null); setCurrent(null); setErr(""); setConfirmDel(false); }
@@ -60,7 +71,7 @@ export default function PromoTable({ promos }) {
       id: current || undefined,
       code: form.code, type: form.type, value: form.value, min_spend: form.min_spend,
       active: form.active, starts_at: form.starts_at || null, ends_at: form.ends_at || null,
-      usage_limit: form.usage_limit || null,
+      usage_limit: form.usage_limit || null, product_slugs: form.product_slugs,
     });
     setBusy(false);
     if (!res?.ok) { setErr(res?.error || "Gagal simpan."); return; }
@@ -102,24 +113,40 @@ export default function PromoTable({ promos }) {
             <input value={form.code} onChange={(e) => set("code", e.target.value.toUpperCase())} placeholder="MISAL DOMANIC10" />
           </div>
 
-          <div className="odrawer__row2">
-            <div className="odrawer__field">
-              <label>Tipe</label>
-              <select value={form.type} onChange={(e) => set("type", e.target.value)}>
-                <option value="percent">Persen (%)</option>
-                <option value="fixed">Nominal (Rp)</option>
-              </select>
-            </div>
+          <div className="odrawer__field">
+            <label>Tipe</label>
+            <select value={form.type} onChange={(e) => set("type", e.target.value)}>
+              <option value="percent">Persen (%)</option>
+              <option value="fixed">Nominal (Rp)</option>
+              <option value="freeship">Gratis ongkir</option>
+            </select>
+          </div>
+
+          {form.type !== "freeship" && (
             <div className="odrawer__field">
               <label>{form.type === "percent" ? "Nilai (%)" : "Nilai (Rp)"}</label>
               <input type="number" min="1" value={form.value} onChange={(e) => set("value", e.target.value)} />
             </div>
-          </div>
+          )}
 
           <div className="odrawer__field">
             <label>Min belanja (Rp, 0 = bebas)</label>
             <input type="number" min="0" value={form.min_spend} onChange={(e) => set("min_spend", e.target.value)} />
           </div>
+
+          {productList.length > 0 && (
+            <div className="odrawer__field">
+              <label>Berlaku untuk (kosong = semua produk)</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {productList.map((pr) => (
+                  <label key={pr.slug} className="odrawer__check">
+                    <input type="checkbox" checked={form.product_slugs.includes(pr.slug)} onChange={() => toggleSlug(pr.slug)} />
+                    {pr.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="odrawer__row2">
             <div className="odrawer__field">
@@ -193,7 +220,14 @@ export default function PromoTable({ promos }) {
             )}
             {rows.map((p) => (
               <tr key={p.id} onClick={() => openEdit(p)}>
-                <td><b>{p.code}</b></td>
+                <td>
+                  <b>{p.code}</b>
+                  {Array.isArray(p.product_slugs) && p.product_slugs.length > 0 && (
+                    <div style={{ fontSize: ".72rem", color: "var(--taupe)" }}>
+                      {p.product_slugs.map((s) => nameBySlug[s] || s).join(", ")}
+                    </div>
+                  )}
+                </td>
                 <td>{discountLabel(p)}</td>
                 <td>{p.min_spend > 0 ? rupiah(p.min_spend) : "-"}</td>
                 <td>{periodLabel(p)}</td>

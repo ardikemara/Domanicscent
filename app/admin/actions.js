@@ -137,15 +137,24 @@ export async function savePromo(input) {
   if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
   const code = (input?.code || "").toString().trim().toUpperCase();
   if (!code) return { ok: false, error: "Kode wajib diisi." };
-  const type = input?.type === "fixed" ? "fixed" : "percent";
-  const value = parseInt(input?.value, 10);
-  if (!Number.isFinite(value) || value <= 0) return { ok: false, error: "Nilai diskon harus lebih dari 0." };
-  if (type === "percent" && value > 100) return { ok: false, error: "Diskon persen maksimal 100." };
+  const type = ["fixed", "freeship"].includes(input?.type) ? input.type : "percent";
+  let value = parseInt(input?.value, 10);
+  if (type === "freeship") {
+    value = 0; // free ongkir nggak butuh nilai diskon subtotal
+  } else {
+    if (!Number.isFinite(value) || value <= 0) return { ok: false, error: "Nilai diskon harus lebih dari 0." };
+    if (type === "percent" && value > 100) return { ok: false, error: "Diskon persen maksimal 100." };
+  }
   const minSpend = Math.max(0, parseInt(input?.min_spend, 10) || 0);
   const active = !!input?.active;
   const startsAt = input?.starts_at ? input.starts_at : null;
   const endsAt = input?.ends_at ? input.ends_at : null;
   const usageLimit = input?.usage_limit ? Math.max(1, parseInt(input.usage_limit, 10)) : null;
+  // Scope produk: cuma slug yang valid; kosong = berlaku semua produk (null).
+  const slugs = Array.isArray(input?.product_slugs)
+    ? input.product_slugs.filter((s) => products.some((p) => p.slug === s))
+    : [];
+  const productSlugs = slugs.length ? slugs : null;
   const id = input?.id || null;
   const sql = getSql();
 
@@ -159,15 +168,16 @@ export async function savePromo(input) {
     [row] = await sql`
       update domanic.promo_codes set
         code = ${code}, type = ${type}, value = ${value}, min_spend = ${minSpend},
-        active = ${active}, starts_at = ${startsAt}, ends_at = ${endsAt}, usage_limit = ${usageLimit}
+        active = ${active}, starts_at = ${startsAt}, ends_at = ${endsAt}, usage_limit = ${usageLimit},
+        product_slugs = ${productSlugs}
       where id = ${id}
-      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, product_slugs`;
     if (!row) return { ok: false, error: "Promo nggak ketemu." };
   } else {
     [row] = await sql`
-      insert into domanic.promo_codes (code, type, value, min_spend, active, starts_at, ends_at, usage_limit)
-      values (${code}, ${type}, ${value}, ${minSpend}, ${active}, ${startsAt}, ${endsAt}, ${usageLimit})
-      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+      insert into domanic.promo_codes (code, type, value, min_spend, active, starts_at, ends_at, usage_limit, product_slugs)
+      values (${code}, ${type}, ${value}, ${minSpend}, ${active}, ${startsAt}, ${endsAt}, ${usageLimit}, ${productSlugs})
+      returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, product_slugs`;
   }
   return { ok: true, promo: { ...row } };
 }
@@ -177,7 +187,7 @@ export async function togglePromo(id, active) {
   const sql = getSql();
   const [row] = await sql`
     update domanic.promo_codes set active = ${!!active} where id = ${id}
-    returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count`;
+    returning id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, product_slugs`;
   if (!row) return { ok: false, error: "Promo nggak ketemu." };
   return { ok: true, promo: { ...row } };
 }

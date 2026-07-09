@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSql } from "@/lib/db";
+import { products } from "@/lib/products";
 import { isAdmin } from "@/lib/adminAuth";
 import PromoTable from "@/components/admin/PromoTable";
 
@@ -9,7 +10,7 @@ export const metadata = { title: "Promo · Admin DOMANIC", robots: { index: fals
 async function fetchData() {
   const sql = getSql();
   const rows = await sql`
-    select id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, created_at
+    select id, code, type, value, min_spend, active, starts_at, ends_at, usage_limit, used_count, product_slugs, created_at
     from domanic.promo_codes
     order by created_at desc`;
   const promos = rows.map((r) => ({ ...r }));
@@ -38,7 +39,7 @@ export default async function AdminPromo() {
         <div className="adm__stat"><span>Total pemakaian</span><b>{totalUsed}</b></div>
       </div>
 
-      <PromoTable promos={promos} />
+      <PromoTable promos={promos} productList={products.map((p) => ({ slug: p.slug, name: p.name }))} />
     </div>
   );
 }
