@@ -9,7 +9,7 @@ import { logoutAdmin } from "@/app/admin/actions";
 // Kalau modulnya kelar, kasih href + match, terus set ready: true.
 const NAV = [
   { href: "/admin/orders", label: "Data Order", match: "/admin/orders", ready: true },
-  { label: "Data Customer", ready: false },
+  { href: "/admin/customers", label: "Data Customer", match: "/admin/customers", ready: true },
   { label: "Data Parfum", ready: false },
   { label: "Promo", ready: false },
   { label: "Analytic Promo", ready: false },
