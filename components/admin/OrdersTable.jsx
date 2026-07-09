@@ -48,10 +48,15 @@ export default function OrdersTable({ orders }) {
     setDetail(null);
     setErr("");
     setLoading(true);
-    const d = await getOrderDetail(orderNumber);
-    setDetail(d);
-    setResi(d?.order?.tracking_number || "");
-    setLoading(false);
+    try {
+      const d = await getOrderDetail(orderNumber);
+      setDetail(d && d.order ? d : { error: d?.error || "load-failed" });
+      setResi(d?.order?.tracking_number || "");
+    } catch (e) {
+      setDetail({ error: "load-failed" });
+    } finally {
+      setLoading(false);
+    }
   }
 
   function close() {

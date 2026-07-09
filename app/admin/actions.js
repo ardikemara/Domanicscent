@@ -82,7 +82,11 @@ export async function getOrderDetail(orderNumber) {
     select product_name, qty, unit_price, line_total
     from domanic.order_items
     where order_id = (select id from domanic.orders where order_number = ${on})`;
-  return { order: rows[0], items };
+  // Ubah ke plain object/array biar aman diserialisasi ke komponen client.
+  return {
+    order: { ...rows[0] },
+    items: items.map((it) => ({ ...it })),
+  };
 }
 
 export async function markShippedFromDrawer(orderNumber, resi) {
