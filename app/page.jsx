@@ -20,6 +20,7 @@ const orgJsonLd = {
   description:
     "Brand extrait de parfum lokal premium dari Indonesia. Setiap parfum dibuat dari persona dan fully macerated 2-4 minggu sebelum dibotolkan.",
   slogan: "Wear your identity",
+  sameAs: ["https://www.instagram.com/domanicscent/"],
 };
 
 const websiteJsonLd = {
