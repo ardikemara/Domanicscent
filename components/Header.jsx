@@ -15,6 +15,7 @@ export default function Header() {
             <Link href="/persona">Find Your Persona</Link>
             <Link href="/#why">Why Domanic</Link>
             <Link href="/#story">Our Story</Link>
+            <Link href="/journal">Journal</Link>
           </nav>
           <CartButton />
         </div>
