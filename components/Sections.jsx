@@ -104,27 +104,6 @@ export function Story() {
   );
 }
 
-export function Reassurance() {
-  const items = [
-    ["Extrait De Parfum", "Konsentrasi tertinggi, tahan lama"],
-    ["Matured, never rushed", "Diistirahatkan sampai smooth"],
-    ["Gratis ongkir", "Order pertama & di atas Rp 500.000"],
-    ["Garansi 30 hari", "Nggak cocok? Retur gampang"],
-  ];
-  return (
-    <section className="sec">
-      <div className="wrap assure">
-        {items.map(([h, p]) => (
-          <div className="assure__item" key={h}>
-            <h4>{h}</h4>
-            <p>{p}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export function JournalTeaser() {
   return (
     <section className="sec journalhome" id="journal">
@@ -137,6 +116,7 @@ export function JournalTeaser() {
         <div className="journalhome__grid">
           {articles.slice(0, 3).map((a) => (
             <Link key={a.slug} href={`/journal/${a.slug}`} className="journal__card">
+              <div className="journal__thumb"><img src={a.image} alt={a.title} loading="lazy" /></div>
               <p className="eyebrow">{a.eyebrow}</p>
               <h3>{a.title}</h3>
               <p className="journal__desc">{a.description}</p>

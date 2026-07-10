@@ -26,6 +26,7 @@ export default function JournalPage() {
       <div className="journal__list">
         {articles.map((a) => (
           <Link key={a.slug} href={`/journal/${a.slug}`} className="journal__card">
+            <div className="journal__thumb"><img src={a.image} alt={a.title} loading="lazy" /></div>
             <p className="eyebrow">{a.eyebrow}</p>
             <h2>{a.title}</h2>
             <p className="journal__desc">{a.description}</p>

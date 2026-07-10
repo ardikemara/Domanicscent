@@ -4,7 +4,6 @@ import {
   PersonaTeaser,
   WhyDomanic,
   Story,
-  Reassurance,
   JournalTeaser,
   Newsletter,
 } from "@/components/Sections";
@@ -48,7 +47,6 @@ export default function Home() {
       <PersonaTeaser />
       <WhyDomanic />
       <Story />
-      <Reassurance />
       <JournalTeaser />
       <Newsletter />
     </>

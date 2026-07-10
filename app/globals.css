@@ -648,7 +648,10 @@ footer{background:var(--charcoal);color:var(--beige)}
 
 /* ---- Journal ---- */
 .journal__list{display:flex;flex-direction:column;gap:22px}
-.journal__card{display:block;padding:28px;border:1px solid rgba(0,0,0,.09);background:#fff;transition:border-color .2s}
+.journal__card{display:block;padding:28px;border:1px solid rgba(0,0,0,.09);background:#fff;transition:border-color .2s;overflow:hidden}
+.journal__thumb{aspect-ratio:16/10;overflow:hidden;margin:-28px -28px 20px;background:var(--cream)}
+.journal__thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.journal__card:hover .journal__thumb img{transform:scale(1.04)}
 .journal__card:hover{border-color:var(--umber)}
 .journal__card h2,.journal__card h3{font-family:var(--disp);font-weight:400;font-size:1.35rem;color:var(--umber);margin:10px 0 8px;letter-spacing:.01em}
 .journal__desc{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
