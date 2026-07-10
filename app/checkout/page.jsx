@@ -189,12 +189,12 @@ export default function CheckoutPage() {
             ))}
           </div>
 
-          <div className="promo">
+          <div className="promoform">
             <input value={promo} onChange={(e) => setPromo(e.target.value)} placeholder="Kode promo (mis. DOMANIC10)" />
             <button type="button" onClick={applyPromo} disabled={checking}>{checking ? "..." : "Pakai"}</button>
           </div>
           {promoState.message && (
-            <p className={`promo__msg ${promoState.valid ? "ok" : "bad"}`}>{promoState.message}</p>
+            <p className={`promoform__msg ${promoState.valid ? "ok" : "bad"}`}>{promoState.message}</p>
           )}
 
           <div className="summary__totals">
