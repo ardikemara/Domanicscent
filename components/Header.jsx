@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CartButton from "@/components/cart/CartButton";
+import MobileNav from "@/components/MobileNav";
 
 export default function Header() {
   return (
@@ -9,6 +10,7 @@ export default function Header() {
       </div>
       <header>
         <div className="wrap nav">
+          <MobileNav />
           <Link className="brand" href="/">DOMANIC</Link>
           <nav className="nav__links">
             <Link href="/#collection">Collection</Link>
