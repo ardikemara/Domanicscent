@@ -23,7 +23,7 @@ export function generateMetadata({ params }) {
       url: `/products/${p.slug}`,
       title,
       description,
-      images: [{ url: p.image, width: 1200, height: 900, alt: `Domanic ${p.name}, ${p.concentration}` }],
+      images: [{ url: p.image.replace(/\.webp$/, ".jpg"), width: 960, height: 1200, alt: `Domanic ${p.name}, ${p.concentration}` }],
     },
     twitter: { card: "summary_large_image" },
   };

@@ -14,7 +14,7 @@ export const metadata = {
     title: meta.title,
     description: meta.description,
     publishedTime: meta.date,
-    images: [{ url: "/images/journal/edp-edt-artikel-hero.webp", width: 928, height: 1152 }],
+    images: [{ url: "/images/journal/edp-edt-artikel-hero.jpg", width: 928, height: 1152 }],
   },
   twitter: { card: "summary_large_image" },
 };
