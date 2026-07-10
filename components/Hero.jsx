@@ -43,10 +43,10 @@ const Q = {
   },
 };
 
-function Tile({ q, i, area }) {
+function Tile({ q, i, area, extra }) {
   const t = Q[q].tiles[i];
   return (
-    <Link href={`/persona/${Q[q].slug}`} className="mz__tile" style={{ gridArea: area }}>
+    <Link href={`/persona/${Q[q].slug}`} className={`mz__tile${extra ? " mz__tile--deskonly" : ""}`} style={{ gridArea: area }}>
       <img src={t.img} alt={t.alt} loading="eager" />
     </Link>
   );
@@ -66,20 +66,20 @@ export default function Hero() {
     <section className="mz" aria-label="Domanic signature collection">
       {/* velvet quadrant */}
       <Tile q="velvet" i={0} area="v1" /><Tile q="velvet" i={1} area="v2" />
-      <Tile q="velvet" i={2} area="v3" /><Tile q="velvet" i={3} area="v4" />
-      <Tile q="velvet" i={4} area="v5" /><BottleTile q="velvet" area="vb" />
+      <Tile q="velvet" i={2} area="v3" /><Tile q="velvet" i={3} area="v4" extra />
+      <Tile q="velvet" i={4} area="v5" extra /><BottleTile q="velvet" area="vb" />
       {/* lily quadrant */}
       <Tile q="lily" i={0} area="l1" /><Tile q="lily" i={1} area="l2" />
-      <Tile q="lily" i={2} area="l3" /><Tile q="lily" i={3} area="l4" />
-      <Tile q="lily" i={4} area="l5" /><BottleTile q="lily" area="lb" />
+      <Tile q="lily" i={2} area="l3" /><Tile q="lily" i={3} area="l4" extra />
+      <Tile q="lily" i={4} area="l5" extra /><BottleTile q="lily" area="lb" />
       {/* whisper quadrant */}
       <Tile q="whisper" i={0} area="w1" /><Tile q="whisper" i={1} area="w2" />
-      <Tile q="whisper" i={2} area="w3" /><Tile q="whisper" i={3} area="w4" />
-      <Tile q="whisper" i={4} area="w5" /><BottleTile q="whisper" area="wb" />
+      <Tile q="whisper" i={2} area="w3" /><Tile q="whisper" i={3} area="w4" extra />
+      <Tile q="whisper" i={4} area="w5" extra /><BottleTile q="whisper" area="wb" />
       {/* oud quadrant */}
       <Tile q="oud" i={0} area="o1" /><Tile q="oud" i={1} area="o2" />
-      <Tile q="oud" i={2} area="o3" /><Tile q="oud" i={3} area="o4" />
-      <Tile q="oud" i={4} area="o5" /><BottleTile q="oud" area="ob" />
+      <Tile q="oud" i={2} area="o3" /><Tile q="oud" i={3} area="o4" extra />
+      <Tile q="oud" i={4} area="o5" extra /><BottleTile q="oud" area="ob" />
 
       <div className="mz__text" style={{ gridArea: "tx" }}>
         <span className="eyebrow">Extrait De Parfum · Signature Collection</span>
