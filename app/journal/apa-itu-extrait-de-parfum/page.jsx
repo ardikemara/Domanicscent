@@ -14,6 +14,7 @@ export const metadata = {
     title: meta.title,
     description: meta.description,
     publishedTime: meta.date,
+    images: [{ url: "/images/journal/extrait-artikel-hero.webp", width: 1200, height: 805 }],
   },
   twitter: { card: "summary_large_image" },
 };
@@ -24,6 +25,7 @@ const articleJsonLd = {
   headline: meta.title,
   description: meta.description,
   datePublished: meta.date,
+  image: ["https://www.domanicscent.com/images/journal/extrait-artikel-hero.webp"],
   author: { "@type": "Organization", name: "Domanic Scent" },
   publisher: { "@type": "Organization", name: "Domanic Scent", url: "https://www.domanicscent.com" },
   mainEntityOfPage: `https://www.domanicscent.com/journal/${meta.slug}`,

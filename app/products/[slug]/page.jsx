@@ -43,9 +43,22 @@ function productJsonLd(p) {
       url: `https://www.domanicscent.com/products/${p.slug}`,
       priceCurrency: "IDR",
       price: p.price,
+      priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
     },
+  };
+}
+
+function breadcrumbJsonLd(p) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.domanicscent.com/" },
+      { "@type": "ListItem", position: 2, name: "Collection", item: "https://www.domanicscent.com/#collection" },
+      { "@type": "ListItem", position: 3, name: p.name, item: `https://www.domanicscent.com/products/${p.slug}` },
+    ],
   };
 }
 
@@ -58,6 +71,10 @@ export default function ProductPage({ params }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(p)) }}
       />
       <Link href="/#collection" className="pdp__back">← Kembali ke collection</Link>
 
