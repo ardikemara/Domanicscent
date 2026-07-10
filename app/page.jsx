@@ -17,6 +17,7 @@ const orgJsonLd = {
   "@type": "Organization",
   name: "Domanic Scent",
   url: "https://www.domanicscent.com",
+  logo: "https://www.domanicscent.com/logo.svg",
   description:
     "Brand extrait de parfum lokal premium dari Indonesia. Setiap parfum dibuat dari persona dan fully macerated 2-4 minggu sebelum dibotolkan.",
   slogan: "Wear your identity",
