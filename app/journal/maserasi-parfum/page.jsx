@@ -14,7 +14,7 @@ export const metadata = {
     title: meta.title,
     description: meta.description,
     publishedTime: meta.date,
-    images: [{ url: "/images/journal/maserasi-artikel-hero.webp", width: 1200, height: 805 }],
+    images: [{ url: "/images/journal/maserasi-artikel-hero.jpg", width: 1200, height: 805 }],
   },
   twitter: { card: "summary_large_image" },
 };
