@@ -650,9 +650,14 @@ footer{background:var(--charcoal);color:var(--beige)}
 .journal__list{display:flex;flex-direction:column;gap:22px}
 .journal__card{display:block;padding:28px;border:1px solid rgba(0,0,0,.09);background:#fff;transition:border-color .2s}
 .journal__card:hover{border-color:var(--umber)}
-.journal__card h2{font-family:var(--disp);font-weight:400;font-size:1.35rem;color:var(--umber);margin:10px 0 8px;letter-spacing:.01em}
+.journal__card h2,.journal__card h3{font-family:var(--disp);font-weight:400;font-size:1.35rem;color:var(--umber);margin:10px 0 8px;letter-spacing:.01em}
 .journal__desc{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
 .journal__meta{margin-top:14px;font-size:.8rem;color:var(--taupe)}
+/* journal teaser di homepage */
+.journalhome__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.journalhome__grid .journal__card h3{font-size:1.15rem}
+.journalhome__more{text-align:center;margin-top:30px}
+@media(max-width:820px){.journalhome__grid{grid-template-columns:1fr}}
 .article__meta{font-size:.82rem;color:var(--taupe);margin:6px 0 26px}
 .article__table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
 .article__table th{font-family:var(--disp);font-weight:400;text-align:left;color:var(--umber);letter-spacing:.02em}

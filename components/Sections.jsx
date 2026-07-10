@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { products } from "@/lib/products";
+import { articles } from "@/lib/journal";
 import ProductCard from "@/components/ProductCard";
 import NewsletterForm from "@/components/NewsletterForm";
 
@@ -119,6 +120,33 @@ export function Reassurance() {
             <p>{p}</p>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+export function JournalTeaser() {
+  return (
+    <section className="sec journalhome" id="journal">
+      <div className="wrap">
+        <div className="sec__head">
+          <p className="eyebrow">Journal</p>
+          <h2>Kenalan lebih dalam sama parfum</h2>
+          <div className="rule" />
+        </div>
+        <div className="journalhome__grid">
+          {articles.slice(0, 3).map((a) => (
+            <Link key={a.slug} href={`/journal/${a.slug}`} className="journal__card">
+              <p className="eyebrow">{a.eyebrow}</p>
+              <h3>{a.title}</h3>
+              <p className="journal__desc">{a.description}</p>
+              <p className="journal__meta">{a.dateDisplay} · {a.readTime} baca</p>
+            </Link>
+          ))}
+        </div>
+        <div className="journalhome__more">
+          <Link className="btn btn--ghost" href="/journal">Lihat semua artikel</Link>
+        </div>
       </div>
     </section>
   );

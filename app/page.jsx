@@ -5,6 +5,7 @@ import {
   WhyDomanic,
   Story,
   Reassurance,
+  JournalTeaser,
   Newsletter,
 } from "@/components/Sections";
 
@@ -48,6 +49,7 @@ export default function Home() {
       <WhyDomanic />
       <Story />
       <Reassurance />
+      <JournalTeaser />
       <Newsletter />
     </>
   );
