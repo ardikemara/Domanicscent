@@ -225,7 +225,7 @@ export default function CheckoutPage() {
             {submitting ? "Memproses..." : "Bayar sekarang"}
           </button>
           <p className="checkout__paynote">
-            Pembayaran aman via Midtrans. Bisa pakai QRIS, GoPay, atau transfer bank (Virtual Account).
+            Pembayaran aman via Komerce. Bisa pakai QRIS (GoPay, OVO, Dana, ShopeePay) atau transfer bank (Virtual Account).
           </p>
         </aside>
       </div>
