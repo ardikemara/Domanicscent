@@ -14,7 +14,22 @@ export const metadata = {
   },
 };
 
+// Bagi artikel jadi baris berselang-seling: 2, 3, 2, 3, ...
+function toRows(items, pattern = [2, 3]) {
+  const rows = [];
+  let i = 0;
+  let p = 0;
+  while (i < items.length) {
+    const size = pattern[p % pattern.length];
+    rows.push(items.slice(i, i + size));
+    i += size;
+    p += 1;
+  }
+  return rows;
+}
+
 export default function JournalPage() {
+  const rows = toRows(articles);
   return (
     <div className="wrap infopage journal">
       <p className="eyebrow">Journal</p>
@@ -24,14 +39,18 @@ export default function JournalPage() {
       </p>
 
       <div className="journal__list">
-        {articles.map((a) => (
-          <Link key={a.slug} href={`/journal/${a.slug}`} className="journal__card">
-            <div className="journal__thumb"><img src={a.image} alt={a.title} loading="lazy" /></div>
-            <p className="eyebrow">{a.eyebrow}</p>
-            <h2>{a.title}</h2>
-            <p className="journal__desc">{a.description}</p>
-            <p className="journal__meta">{a.dateDisplay} · {a.readTime} baca</p>
-          </Link>
+        {rows.map((row, idx) => (
+          <div key={idx} className="journal__row" data-count={row.length}>
+            {row.map((a) => (
+              <Link key={a.slug} href={`/journal/${a.slug}`} className="journal__card">
+                <div className="journal__thumb"><img src={a.image} alt={a.title} loading="lazy" /></div>
+                <p className="eyebrow">{a.eyebrow}</p>
+                <h2>{a.title}</h2>
+                <p className="journal__desc">{a.description}</p>
+                <p className="journal__meta">{a.dateDisplay} · {a.readTime} baca</p>
+              </Link>
+            ))}
+          </div>
         ))}
       </div>
     </div>
