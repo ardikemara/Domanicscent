@@ -4,7 +4,7 @@ import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { createSnapTransaction } from "@/lib/midtrans";
 import { searchDestination, quoteJne } from "@/lib/rajaongkir";
-import { sendEmail, personaResultEmail } from "@/lib/email";
+import { sendEmail, personaResultEmail, orderConfirmationEmail, welcomeEmail } from "@/lib/email";
 
 const SHIPPING_FALLBACK = 25000;   // dipakai kalau API ongkir gagal
 const FREE_SHIP_MIN = 500000;
@@ -206,6 +206,18 @@ export async function createOrder(payload) {
         values ('checkout', ${c.email || null}, ${c.name}, ${c.phone})`;
     });
 
+    // Email konfirmasi order (best-effort, jangan blokir alur order).
+    try {
+      const { subject, html } = orderConfirmationEmail({
+        orderNumber, name: c.name,
+        items: lines.map((l) => ({ name: l.name, qty: l.qty, lineTotal: l.lineTotal })),
+        subtotal, discount, shipping, total, promoCode: promoApplied,
+      });
+      await sendEmail({ to: c.email, subject, html });
+    } catch (e) {
+      // diamkan, order tetap jadi
+    }
+
     // Bikin transaksi Snap di Midtrans. Kalau gagal, order tetap tersimpan
     // (payment_status 'unpaid') dan customer bisa bayar ulang dari thank-you page.
     let snapToken = null;
@@ -302,5 +314,15 @@ export async function subscribeLead(email, persona, source, name, phone) {
       // diamkan, lead tetap tersimpan
     }
   }
+
+  if (src === "newsletter") {
+    try {
+      const { subject, html } = welcomeEmail({ name: nm });
+      await sendEmail({ to: clean, subject, html });
+    } catch (e) {
+      // diamkan, lead tetap tersimpan
+    }
+  }
+
   return { ok: true };
 }
