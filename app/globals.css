@@ -39,6 +39,16 @@ header{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.8);
 .nav__cart{font-family:var(--disp);font-size:.8rem;letter-spacing:.14em;border:1px solid var(--umber);
   border-radius:999px;padding:8px 18px;color:var(--umber);transition:background .25s,color .25s}
 .nav__cart:hover{background:var(--umber);color:var(--off-white)}
+.navburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:38px;height:38px;padding:8px;background:none;border:0;cursor:pointer;margin-left:-8px}
+.navburger span{display:block;height:1.5px;background:var(--charcoal);border-radius:2px}
+.mobmenu{position:fixed;inset:0;z-index:60}
+.mobmenu__overlay{position:absolute;inset:0;background:rgba(42,36,32,.4)}
+.mobmenu__panel{position:absolute;top:0;right:0;height:100%;width:min(300px,82vw);background:var(--off-white);display:flex;flex-direction:column;padding:28px 26px;box-shadow:-14px 0 40px rgba(42,36,32,.16);animation:mobmenuin .25s ease}
+@keyframes mobmenuin{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.mobmenu__close{position:absolute;top:14px;right:16px;background:none;border:0;font-size:1.7rem;line-height:1;color:var(--taupe);cursor:pointer}
+.mobmenu__brand{font-family:var(--disp);font-size:1.1rem;letter-spacing:.36em;color:var(--umber);padding-left:.36em;margin:6px 0 22px}
+.mobmenu__link{font-family:var(--disp);font-size:1rem;letter-spacing:.04em;color:var(--charcoal);padding:15px 2px;border-bottom:1px solid rgba(160,136,112,.18)}
+.mobmenu__link:hover{color:var(--umber)}
 
 /* hero (Plan B: bottles right, text left) */
 .hero{position:relative;min-height:clamp(560px,86vh,820px);display:flex;align-items:center;overflow:hidden}
@@ -250,6 +260,7 @@ footer{background:var(--charcoal);color:var(--beige)}
   .assure{grid-template-columns:repeat(2,1fr);gap:30px}
   .foot{grid-template-columns:1fr 1fr}
   .nav__links{display:none}
+  .navburger{display:flex}
   .pdp__top{grid-template-columns:1fr;gap:30px}
   .pyramid{grid-template-columns:1fr;gap:26px;text-align:center}
   .hero__scrim{background:linear-gradient(180deg,rgba(250,247,242,.92) 0%,rgba(250,247,242,.6) 34%,rgba(250,247,242,0) 64%)}
