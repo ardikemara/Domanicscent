@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSql } from "@/lib/db";
 import { verifySignature, mapPaymentStatus } from "@/lib/midtrans";
+import { sendEmail, paymentReceivedEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,29 @@ export async function POST(req) {
         set payment_status = 'paid', status = 'paid',
             midtrans_transaction_id = ${txId}, paid_at = now()
         where order_number = ${orderNumber}`;
+
+      // Email "pembayaran diterima" (best-effort, nggak ganggu balasan ke Midtrans).
+      // Guard "already paid" di atas mastiin ini cuma jalan sekali per order.
+      try {
+        const [ord] = await sql`
+          select o.order_number, o.name, o.subtotal, o.discount, o.shipping, o.total, o.promo_code, c.email
+          from domanic.orders o
+          left join domanic.customers c on c.id = o.customer_id
+          where o.order_number = ${orderNumber} limit 1`;
+        if (ord?.email) {
+          const items = await sql`
+            select product_name, qty, line_total from domanic.order_items
+            where order_id = (select id from domanic.orders where order_number = ${orderNumber})`;
+          const { subject, html } = paymentReceivedEmail({
+            orderNumber: ord.order_number, name: ord.name,
+            items: items.map((i) => ({ name: i.product_name, qty: i.qty, lineTotal: i.line_total })),
+            subtotal: ord.subtotal, discount: ord.discount, shipping: ord.shipping, total: ord.total, promoCode: ord.promo_code,
+          });
+          await sendEmail({ to: ord.email, subject, html });
+        }
+      } catch (e) {
+        // diamkan; status paid udah kesimpen
+      }
     } else {
       await sql`
         update domanic.orders
