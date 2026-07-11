@@ -6,7 +6,7 @@ import { isAdmin } from "@/lib/adminAuth";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Leads · Admin DOMANIC", robots: { index: false, follow: false } };
 
-const SOURCE_LABEL = { persona: "Quiz persona", newsletter: "Newsletter" };
+const SOURCE_LABEL = { persona: "Quiz persona", newsletter: "Newsletter", checkout: "Checkout (beli)" };
 
 async function fetchData(q, source) {
   const sql = getSql();
@@ -57,6 +57,7 @@ export default async function AdminLeads({ searchParams }) {
         <input name="q" defaultValue={q} placeholder="Cari email / nama" />
         <select name="source" defaultValue={source}>
           <option value="">Semua sumber</option>
+          <option value="checkout">Checkout (beli)</option>
           <option value="persona">Quiz persona</option>
           <option value="newsletter">Newsletter</option>
         </select>

@@ -658,7 +658,9 @@ footer{background:var(--charcoal);color:var(--beige)}
 .infopage__foot p{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
 
 /* ---- Journal ---- */
-.journal__list{display:flex;flex-direction:column;gap:22px}
+.journal__list{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:820px){.journal__list{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.journal__list{grid-template-columns:1fr}}
 .journal__card{display:block;padding:28px;border:1px solid rgba(0,0,0,.09);background:#fff;transition:border-color .2s;overflow:hidden}
 .journal__thumb{aspect-ratio:16/10;overflow:hidden;margin:-28px -28px 20px;background:var(--cream)}
 .journal__thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
