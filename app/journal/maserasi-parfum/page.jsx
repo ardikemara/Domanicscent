@@ -154,8 +154,9 @@ export default function Article() {
 
       <div className="infopage__foot">
         <p>
-          Artikel berikutnya di Journal: perbedaan EDP dan EDT, dan di mana posisi extrait di
-          antara keduanya.
+          Artikel berikutnya di Journal:{" "}
+          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>, dan di mana
+          posisi extrait di antara keduanya.
         </p>
       </div>
     </article>

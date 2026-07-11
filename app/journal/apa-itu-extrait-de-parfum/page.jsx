@@ -107,7 +107,8 @@ export default function Article() {
         </table>
         <p>
           Angka persisnya beda-beda tiap rumah parfum, tapi urutannya selalu sama: extrait ada di
-          puncak piramida konsentrasi.
+          puncak piramida konsentrasi. Kalau kamu masih bingung dua yang di tengah, baca dulu{" "}
+          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>.
         </p>
       </section>
 
@@ -142,9 +143,10 @@ export default function Article() {
         <p>
           Semua parfum Domanic adalah extrait de parfum, dan kami memperlakukannya seperti extrait
           seharusnya diperlakukan: tidak terburu-buru. Setiap formula dimulai dari sebuah persona,
-          bukan resep. Setelah formula selesai, parfum masih menjalani <Link href="/faq">maceration
-          2 sampai 4 minggu</Link> sebelum dibotolkan, supaya molekulnya menyatu dan karakternya
-          keluar sepenuhnya. We compose, not cook.
+          bukan resep. Setelah formula selesai, parfum masih menjalani{" "}
+          <Link href="/journal/maserasi-parfum">maserasi 2 sampai 4 minggu</Link> sebelum
+          dibotolkan, supaya molekulnya menyatu dan karakternya keluar sepenuhnya. We compose, not
+          cook.
         </p>
         <figure className="article__fig">
           <img src="/images/journal/extrait-artikel-maceration.webp" alt="Proses maceration extrait de parfum Domanic, pipet kaca dan vial amber di meja kerja" width="1200" height="896" loading="lazy" />
