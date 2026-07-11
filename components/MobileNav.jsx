@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 const LINKS = [
   { href: "/#collection", label: "Collection" },
@@ -13,6 +14,9 @@ const LINKS = [
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -32,7 +36,7 @@ export default function MobileNav() {
         <span /><span /><span />
       </button>
 
-      {open && (
+      {mounted && open && createPortal(
         <div className="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="mobmenu__overlay" onClick={() => setOpen(false)} />
           <nav className="mobmenu__panel">
@@ -42,7 +46,8 @@ export default function MobileNav() {
               <Link key={l.href} href={l.href} className="mobmenu__link" onClick={() => setOpen(false)}>{l.label}</Link>
             ))}
           </nav>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
