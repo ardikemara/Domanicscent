@@ -79,8 +79,12 @@ export default function CheckoutPage() {
 
   async function submit() {
     setError("");
-    if (!form.name || !form.phone || !form.address) {
-      setError("Nama, nomor HP, dan alamat wajib diisi.");
+    if (!form.name || !form.phone || !form.email || !form.address) {
+      setError("Nama, email, nomor HP, dan alamat wajib diisi.");
+      return;
+    }
+    if (!form.email.includes("@")) {
+      setError("Email-nya belum bener.");
       return;
     }
     if (subtotal < FREE_SHIP_MIN && !dest) {
@@ -130,8 +134,8 @@ export default function CheckoutPage() {
             <input value={form.phone} onChange={set("phone")} placeholder="08xxxxxxxxxx" />
           </div>
           <div className="field">
-            <label>Email</label>
-            <input value={form.email} onChange={set("email")} placeholder="email@kamu.com" />
+            <label>Email *</label>
+            <input type="email" value={form.email} onChange={set("email")} placeholder="email@kamu.com" />
           </div>
           <div className="field">
             <label>Alamat lengkap *</label>

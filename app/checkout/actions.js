@@ -116,6 +116,9 @@ export async function createOrder(payload) {
     if (!c.name || !c.phone || !c.address) {
       return { ok: false, error: "Nama, nomor HP, dan alamat wajib diisi." };
     }
+    if (!c.email || !String(c.email).includes("@")) {
+      return { ok: false, error: "Email wajib diisi dan harus valid." };
+    }
 
     // recompute line items from server data
     const lines = [];
