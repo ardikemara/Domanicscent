@@ -658,6 +658,9 @@ footer{background:var(--charcoal);color:var(--beige)}
 .infopage__foot p{font-size:.95rem;color:var(--charcoal);opacity:.8;line-height:1.7}
 
 /* ---- Journal ---- */
+/* halaman index journal pakai lebar penuh situs (grid lega), header tetap di lebar baca */
+.journal{max-width:var(--maxw)}
+.journal>.eyebrow,.journal>h1,.journal>.infopage__lead{max-width:720px}
 .journal__list{display:flex;flex-direction:column;gap:22px}
 .journal__row{display:grid;gap:22px}
 .journal__row[data-count="1"]{grid-template-columns:1fr}
