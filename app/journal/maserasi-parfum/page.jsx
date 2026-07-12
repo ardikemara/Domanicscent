@@ -38,6 +38,14 @@ const articleFaqs = [
     a: "Bervariasi tergantung komposisi. Rumah parfum mewah umumnya memakai rentang 3 sampai 8 minggu. Domanic memakai 2 sampai 4 minggu per formula, disesuaikan dengan karakter masing-masing parfum.",
   },
   {
+    q: "Berapa hari resting parfum?",
+    a: "Umumnya 14 sampai 30 hari, alias 2 sampai 4 minggu. Resting adalah sebutan sehari-hari untuk maserasi: parfum diistirahatkan setelah formula selesai supaya molekulnya menyatu dan bau alkoholnya melembut sebelum dipakai atau dijual.",
+  },
+  {
+    q: "Cara maserasi parfum gimana?",
+    a: "Simpan parfum di wadah tertutup rapat, di tempat gelap dan sejuk dengan suhu stabil, lalu diamkan 2 sampai 4 minggu. Yang perlu diingat: maserasi paling efektif dilakukan produsen sebelum pembotolan, di tangki dengan kontrol suhu, bukan sekadar menyimpan botol di rumah.",
+  },
+  {
     q: "Apakah parfum yang baru dibeli bisa dimaserasi sendiri di rumah?",
     a: "Menyimpan parfum baru beberapa minggu di tempat gelap dan sejuk memang bisa sedikit menghaluskan aromanya. Tapi maserasi yang sebenarnya terjadi sebelum pembotolan, di tangki, dengan kontrol suhu. Itu yang tidak bisa direplikasi di rumah.",
   },
@@ -71,10 +79,10 @@ export default function Article() {
       <p className="article__meta">{meta.dateDisplay} · {meta.readTime} baca</p>
 
       <p className="infopage__lead">
-        Maserasi parfum adalah proses mengistirahatkan parfum setelah formula selesai dicampur,
-        biasanya beberapa minggu, supaya molekul minyak wangi dan alkohol menyatu sempurna sebelum
-        dibotolkan. Tanpa maserasi, parfum terasa tajam, kasar, dan bau alkoholnya masih menonjol.
-        Dengan maserasi, aroma jadi halus, dalam, dan utuh.
+        Maserasi parfum, atau yang sering disebut resting, adalah proses mengistirahatkan parfum
+        setelah formula selesai dicampur, umumnya 2 sampai 4 minggu, supaya molekul minyak wangi dan
+        alkohol menyatu sempurna sebelum dibotolkan. Tanpa maserasi, parfum terasa tajam, kasar, dan
+        bau alkoholnya masih menonjol. Dengan maserasi, aroma jadi halus, dalam, dan utuh.
       </p>
 
       <figure className="article__fig">
@@ -114,19 +122,21 @@ export default function Article() {
       </section>
 
       <section className="infopage__item">
-        <h2>Standar rumah parfum mewah</h2>
+        <h2>Berapa lama maserasi parfum?</h2>
         <p>
-          Maserasi bukan penemuan Domanic. Ini praktik standar rumah parfum mewah dunia: Le Labo
-          memaserasi parfumnya sekitar 3 minggu, Tom Ford sampai 6 hingga 8 minggu. Alasannya sama:
-          parfum yang diberi waktu selalu lebih baik dari parfum yang diburu-buru. Yang jarang adalah
-          brand yang mau menahannya, karena maserasi berarti stok tertahan berminggu-minggu sebelum
-          bisa dijual.
+          Maserasi parfum umumnya butuh 2 sampai 4 minggu, atau sekitar 14 sampai 30 hari. Beberapa
+          rumah parfum memakai waktu lebih lama lagi: Le Labo me-resting parfumnya sekitar 3 minggu,
+          Tom Ford sampai 6 hingga 8 minggu. Alasannya sama: parfum yang diberi waktu selalu lebih
+          baik dari parfum yang diburu-buru. Yang jarang adalah brand yang mau menahannya, karena
+          maserasi berarti stok tertahan berminggu-minggu sebelum bisa dijual.
         </p>
       </section>
 
       <section className="infopage__item">
-        <h2>Cara Domanic melakukannya</h2>
+        <h2>Cara maserasi parfum ala Domanic</h2>
         <p>
+          Cara maserasi parfum pada dasarnya sederhana: simpan formula yang sudah jadi di wadah
+          tertutup, di tempat gelap dan sejuk dengan suhu stabil, lalu biarkan waktu bekerja.
           Setiap batch Domanic menjalani maserasi penuh 2 sampai 4 minggu setelah formula selesai,
           dan tidak ada satu botol pun yang dijual sebelum masa itu selesai. Setiap batch diberi
           tanggal, diistirahatkan, dan baru dibotolkan ketika karakternya sudah keluar sepenuhnya.
