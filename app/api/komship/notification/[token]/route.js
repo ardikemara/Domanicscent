@@ -6,17 +6,15 @@ export const dynamic = "force-dynamic";
 
 // Webhook Komship (Shipping Delivery). Payload: { order_no, cnote, status }.
 // URL didaftarkan di dashboard Komerce (Developer > Webhook > Webhook Shipping Delivery):
-// https://www.domanicscent.com/api/komship/notification?token=<KOMSHIP_WEBHOOK_TOKEN>
+// https://www.domanicscent.com/api/komship/notification/<KOMSHIP_WEBHOOK_TOKEN>
 //
-// Komship nggak pakai signature, jadi diamankan dengan token rahasia di query.
+// Komship nggak pakai signature, jadi diamankan dengan token rahasia sebagai
+// bagian dari path (form dashboard Komerce nggak nerima query string).
 // Downgrade dicegah: completed nggak pernah balik ke shipped.
-async function handle(req) {
+async function handle(req, tokenFromPath) {
   const token = process.env.KOMSHIP_WEBHOOK_TOKEN || "";
-  if (token) {
-    const got = new URL(req.url).searchParams.get("token") || "";
-    if (got !== token) {
-      return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 403 });
-    }
+  if (token && tokenFromPath !== token) {
+    return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 403 });
   }
 
   let body = {};
@@ -68,9 +66,9 @@ async function handle(req) {
 }
 
 // Docs bilang PUT, tapi terima POST juga buat jaga-jaga.
-export async function PUT(req) {
-  return handle(req);
+export async function PUT(req, { params }) {
+  return handle(req, params?.token);
 }
-export async function POST(req) {
-  return handle(req);
+export async function POST(req, { params }) {
+  return handle(req, params?.token);
 }
