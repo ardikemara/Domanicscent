@@ -111,7 +111,9 @@ export default function KomercePicker({ orderNumber, methods, total }) {
 
       <p className="paypick__foot">
         Total tagihan <b>{rupiah(total)}</b>. Setelah pilih metode, kamu diarahkan ke halaman bayar
-        aman Komerce untuk menyelesaikan pembayaran.
+        aman Komerce untuk menyelesaikan pembayaran. Catatan: kalau bayar pakai QRIS, nama merchant
+        yang muncul di aplikasimu adalah <b>Komerce</b>, partner pembayaran resmi Domanic. Itu normal
+        dan pembayaranmu tetap tercatat otomatis.
       </p>
     </div>
   );
