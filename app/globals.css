@@ -818,3 +818,8 @@ footer{background:var(--charcoal);color:var(--beige)}
 .promopop__later{display:block;margin:12px auto 0;background:none;border:0;font-size:.76rem;color:var(--taupe);text-decoration:underline;cursor:pointer}
 .promopop__later:hover{color:var(--charcoal)}
 @media(max-width:480px){.promopop__card{padding:32px 22px 24px}}
+
+/* ===== Komship di drawer admin ===== */
+.adm__hint{font-size:.74rem;color:var(--taupe);line-height:1.5;margin:0}
+.adm__pickuprow{display:flex;gap:8px}
+.adm__pickuprow input,.adm__pickuprow select{flex:1;min-width:0;padding:9px 10px;border:1px solid #d9cfc0;border-radius:10px;font:inherit;font-size:.82rem;background:#fff}
