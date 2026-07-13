@@ -823,3 +823,15 @@ footer{background:var(--charcoal);color:var(--beige)}
 .adm__hint{font-size:.74rem;color:var(--taupe);line-height:1.5;margin:0}
 .adm__pickuprow{display:flex;gap:8px}
 .adm__pickuprow input,.adm__pickuprow select{flex:1;min-width:0;padding:9px 10px;border:1px solid #d9cfc0;border-radius:10px;font:inherit;font-size:.82rem;background:#fff}
+
+/* ===== Halaman daftar affiliate ===== */
+.affdaftar{padding-top:56px;padding-bottom:80px;max-width:640px}
+.affdaftar__lead{color:var(--taupe);margin:10px 0 30px;line-height:1.65}
+.affdaftar__form .field{margin-bottom:16px}
+.affdaftar__subhead{font-family:var(--disp);font-weight:400;font-size:1rem;letter-spacing:.05em;margin:26px 0 14px;color:var(--charcoal)}
+.affdaftar__err{font-size:.85rem;color:#8a4636;margin:0 0 14px}
+.affdaftar__form .btn{margin-top:6px}
+.affdaftar__done{background:var(--cream);border-radius:14px;padding:28px}
+.affdaftar__done h3{font-family:var(--disp);font-weight:400;margin-bottom:10px}
+.affdaftar__done p{font-size:.92rem;line-height:1.7;color:var(--charcoal)}
+.adm__linkbtn{background:none;border:0;font-size:.72rem;color:var(--umber);text-decoration:underline;cursor:pointer;padding:0 2px}

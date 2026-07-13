@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin/promo", label: "Promo", match: "/admin/promo", ready: true },
   { href: "/admin/analytic-promo", label: "Analytic Promo", match: "/admin/analytic-promo", ready: true },
   { href: "/admin/lead", label: "Data Lead", match: "/admin/lead", ready: true },
+  { href: "/admin/affiliate", label: "Data Affiliate", match: "/admin/affiliate", ready: true },
 ];
 
 export default function AdminShell({ children }) {

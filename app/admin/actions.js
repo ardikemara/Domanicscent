@@ -6,6 +6,7 @@ import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { checkPassword, createSessionCookie, clearSessionCookie, isAdmin } from "@/lib/adminAuth";
 import { calculateTariff, pickJne, storeOrder, requestPickup, printLabel, getDetail, mapKomshipStatus } from "@/lib/komship";
+import { sendEmail, affiliateApprovedEmail } from "@/lib/email";
 
 export async function loginAdmin(formData) {
   const pw = formData.get("password");
@@ -115,7 +116,50 @@ export async function cancelOrderFromDrawer(orderNumber) {
   await sql`
     update domanic.orders set status = 'cancelled'
     where order_number = ${on} and status in ('pending','paid')`;
+  // Order batal: komisi affiliate yang belum dibayar ikut hangus.
+  try {
+    await sql`
+      update domanic.affiliate_commissions set status = 'void'
+      where order_id = (select id from domanic.orders where order_number = ${on})
+        and status in ('pending', 'eligible')`;
+  } catch {}
   return { ok: true, order: await fetchOrderPlain(sql, on) };
+}
+
+// ---- Affiliate (Data Affiliate) ----
+
+async function fetchAffiliatePlain(sql, id) {
+  const rows = await sql`
+    select a.*,
+      coalesce((select count(*) from domanic.affiliate_clicks k where k.affiliate_id = a.id), 0)::int as clicks,
+      coalesce((select count(*) from domanic.orders o where o.affiliate_id = a.id and o.payment_status = 'paid'), 0)::int as orders_paid,
+      coalesce((select sum(o.total) from domanic.orders o where o.affiliate_id = a.id and o.payment_status = 'paid'), 0)::int as sales_total,
+      coalesce((select sum(c.amount) from domanic.affiliate_commissions c where c.affiliate_id = a.id and c.status <> 'void'), 0)::int as commission_total
+    from domanic.affiliates a where a.id = ${id} limit 1`;
+  return rows[0] ? { ...rows[0] } : null;
+}
+
+// Ubah status affiliate. Approve ngirim email berisi link (best-effort).
+export async function setAffiliateStatus(id, status) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const allowed = ["approved", "rejected", "suspended", "pending"];
+  if (!allowed.includes(status)) return { ok: false, error: "Status nggak dikenal." };
+  const sql = getSql();
+  const [row] = await sql`
+    update domanic.affiliates
+    set status = ${status},
+        approved_at = case when ${status} = 'approved' then coalesce(approved_at, now()) else approved_at end
+    where id = ${id}
+    returning id, slug, name, email`;
+  if (!row) return { ok: false, error: "Affiliate nggak ketemu." };
+
+  if (status === "approved") {
+    try {
+      const { subject, html } = affiliateApprovedEmail({ name: row.name, slug: row.slug });
+      await sendEmail({ to: row.email, subject, html });
+    } catch {}
+  }
+  return { ok: true, affiliate: await fetchAffiliatePlain(sql, id) };
 }
 
 // ---- Komship (pengiriman otomatis) ----
