@@ -7,6 +7,10 @@ import {
   markShippedFromDrawer,
   markCompletedFromDrawer,
   cancelOrderFromDrawer,
+  createShipmentFromDrawer,
+  requestPickupFromDrawer,
+  getShipmentLabel,
+  refreshShipmentFromDrawer,
 } from "@/app/admin/actions";
 
 const PAY_LABEL = {
@@ -43,6 +47,10 @@ export default function OrdersTable({ orders }) {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const [mounted, setMounted] = useState(false);
+  // Form pickup Komship (default: hari ini, jam 10:00, motor).
+  const [pickupDate, setPickupDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [pickupTime, setPickupTime] = useState("10:00");
+  const [pickupVehicle, setPickupVehicle] = useState("Motor");
 
   useEffect(() => setMounted(true), []);
 
@@ -70,6 +78,24 @@ export default function OrdersTable({ orders }) {
     // Patch order yang berubah langsung di state (tanpa refresh halaman).
     if (res.order) {
       setRows((prev) => prev.map((r) => (r.order_number === res.order.order_number ? res.order : r)));
+    }
+  }
+
+  // Ambil label PDF (base64) lalu buka di tab baru buat diprint (A4).
+  async function openLabel(orderNumber) {
+    setBusy(true);
+    setErr("");
+    const res = await getShipmentLabel(orderNumber);
+    setBusy(false);
+    if (!res?.ok || !res.base64) { setErr(res?.error || "Gagal ambil label."); return; }
+    try {
+      const bin = atob(res.base64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      window.open(url, "_blank");
+    } catch {
+      setErr("Label kebaca tapi gagal dibuka, coba lagi.");
     }
   }
 
@@ -122,6 +148,51 @@ export default function OrdersTable({ orders }) {
           <div className="adm__kv"><span>Order dibuat</span><span>{fmt(o.created_at)}</span></div>
         </section>
 
+        {o.payment_status === "paid" && o.status !== "cancelled" && (
+          <section className="adm__card">
+            <h3>Pengiriman (Komship)</h3>
+            {!o.komship_order_no ? (
+              <div className="adm__action">
+                <p className="adm__hint">Daftarkan paket ke Komship: resi otomatis, kurir jemput ke gudang. Ongkir kepotong dari saldo Komerce.</p>
+                <button className="btn btn--solid" type="button" disabled={busy}
+                  onClick={() => run(createShipmentFromDrawer, o.order_number)}>
+                  {busy ? "Memproses…" : "Buat Pengiriman"}
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="adm__kv"><span>No. Komship</span><span>{o.komship_order_no}</span></div>
+                <div className="adm__kv"><span>Status kiriman</span><span>{o.komship_status || "-"}</span></div>
+                <div className="adm__kv"><span>Resi (AWB)</span><span>{o.tracking_number || "belum keluar"}</span></div>
+                <div className="adm__action">
+                  <div className="adm__pickuprow">
+                    <input type="date" value={pickupDate} onChange={(e) => setPickupDate(e.target.value)} />
+                    <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} />
+                    <select value={pickupVehicle} onChange={(e) => setPickupVehicle(e.target.value)}>
+                      <option>Motor</option>
+                      <option>Mobil</option>
+                      <option>Truk</option>
+                    </select>
+                  </div>
+                  <button className="btn btn--solid" type="button" disabled={busy}
+                    onClick={() => run(requestPickupFromDrawer, o.order_number, pickupDate, pickupTime, pickupVehicle)}>
+                    {busy ? "Memproses…" : "Jadwalkan Pickup"}
+                  </button>
+                  <button className="btn btn--ghost" type="button" disabled={busy}
+                    onClick={() => openLabel(o.order_number)}>
+                    Print Label (A4)
+                  </button>
+                  <button className="btn btn--ghost" type="button" disabled={busy}
+                    onClick={() => run(refreshShipmentFromDrawer, o.order_number)}>
+                    Refresh status
+                  </button>
+                </div>
+                <p className="adm__hint">Jam pickup minimal 90 menit dari sekarang. Status dikirim/selesai update otomatis dari kurir.</p>
+              </>
+            )}
+          </section>
+        )}
+
         <section className="adm__card">
           <h3>Aksi</h3>
           <div className="adm__kv"><span>Status order</span><span><b>{o.status}</b></span></div>
@@ -130,9 +201,9 @@ export default function OrdersTable({ orders }) {
 
           {err && <p className="adm__err">{err}</p>}
 
-          {o.payment_status === "paid" && (o.status === "paid" || o.status === "pending") && (
+          {o.payment_status === "paid" && (o.status === "paid" || o.status === "pending") && !o.komship_order_no && (
             <div className="adm__action">
-              <input value={resi} onChange={(e) => setResi(e.target.value)} placeholder="Nomor resi JNE" />
+              <input value={resi} onChange={(e) => setResi(e.target.value)} placeholder="Nomor resi JNE (kirim manual)" />
               <button className="btn btn--solid" type="button" disabled={busy}
                 onClick={() => run(markShippedFromDrawer, o.order_number, resi)}>
                 {busy ? "Menyimpan…" : "Tandai dikirim"}

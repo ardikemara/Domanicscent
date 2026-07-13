@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { checkPassword, createSessionCookie, clearSessionCookie, isAdmin } from "@/lib/adminAuth";
+import { calculateTariff, pickJne, storeOrder, requestPickup, printLabel, getDetail, mapKomshipStatus } from "@/lib/komship";
 
 export async function loginAdmin(formData) {
   const pw = formData.get("password");
@@ -115,6 +116,111 @@ export async function cancelOrderFromDrawer(orderNumber) {
     update domanic.orders set status = 'cancelled'
     where order_number = ${on} and status in ('pending','paid')`;
   return { ok: true, order: await fetchOrderPlain(sql, on) };
+}
+
+// ---- Komship (pengiriman otomatis) ----
+
+// Buat delivery order di Komship untuk order yang sudah paid.
+// Resi (AWB) keluar nanti saat pickup dijadwalkan / via webhook.
+export async function createShipmentFromDrawer(orderNumber) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  try {
+    const order = await fetchOrderPlain(sql, on);
+    if (!order) return { ok: false, error: "Order nggak ketemu." };
+    if (order.payment_status !== "paid") return { ok: false, error: "Order belum dibayar." };
+    if (order.komship_order_no) return { ok: false, error: "Pengiriman sudah pernah dibuat." };
+    if (!order.shipping_destination_id) {
+      return { ok: false, error: "Order ini nggak punya ID tujuan (order lama?). Kirim manual aja." };
+    }
+
+    const totalQty = order.items.reduce((s, it) => s + it.qty, 0);
+    const options = await calculateTariff(order.shipping_destination_id, totalQty * 500, order.subtotal);
+    const tariff = pickJne(options);
+    if (!tariff) return { ok: false, error: "Tarif JNE nggak tersedia untuk tujuan ini." };
+
+    const { orderNo } = await storeOrder({ order, items: order.items, tariff });
+    await sql`
+      update domanic.orders
+      set komship_order_no = ${orderNo}, komship_status = 'Diajukan'
+      where order_number = ${on}`;
+    return { ok: true, order: await fetchOrderPlain(sql, on) };
+  } catch (e) {
+    return { ok: false, error: e?.message || "Gagal bikin pengiriman." };
+  }
+}
+
+// Jadwalkan pickup kurir. Kalau AWB langsung keluar, simpan sebagai resi.
+export async function requestPickupFromDrawer(orderNumber, pickupDate, pickupTime, vehicle) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  try {
+    const order = await fetchOrderPlain(sql, on);
+    if (!order?.komship_order_no) return { ok: false, error: "Buat pengiriman dulu." };
+    const { awb } = await requestPickup(order.komship_order_no, pickupDate, pickupTime, vehicle);
+    await sql`
+      update domanic.orders
+      set komship_status = 'Pickup dijadwalkan',
+          tracking_number = coalesce(nullif(${awb}, ''), tracking_number)
+      where order_number = ${on}`;
+    return { ok: true, order: await fetchOrderPlain(sql, on) };
+  } catch (e) {
+    return { ok: false, error: e?.message || "Gagal jadwalkan pickup." };
+  }
+}
+
+// Ambil label PDF (base64) buat diprint. Client yang buka jadi file.
+export async function getShipmentLabel(orderNumber) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  try {
+    const order = await fetchOrderPlain(sql, on);
+    if (!order?.komship_order_no) return { ok: false, error: "Buat pengiriman dulu." };
+    const { base64 } = await printLabel(order.komship_order_no);
+    if (!base64) return { ok: false, error: "Label belum tersedia (biasanya setelah pickup dijadwalkan)." };
+    return { ok: true, base64 };
+  } catch (e) {
+    return { ok: false, error: e?.message || "Gagal ambil label." };
+  }
+}
+
+// Refresh status + AWB dari Komship (fallback kalau webhook belum masuk).
+export async function refreshShipmentFromDrawer(orderNumber) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const on = (orderNumber || "").toString().trim();
+  const sql = getSql();
+  try {
+    const order = await fetchOrderPlain(sql, on);
+    if (!order?.komship_order_no) return { ok: false, error: "Buat pengiriman dulu." };
+    const d = await getDetail(order.komship_order_no);
+    const mapped = mapKomshipStatus(d.status);
+    if (mapped === "shipped" && order.status !== "shipped" && order.status !== "completed") {
+      await sql`
+        update domanic.orders
+        set status = 'shipped', komship_status = ${d.status},
+            tracking_number = coalesce(nullif(${d.awb}, ''), tracking_number),
+            shipped_at = coalesce(shipped_at, now())
+        where order_number = ${on}`;
+    } else if (mapped === "completed" && order.status !== "completed") {
+      await sql`
+        update domanic.orders
+        set status = 'completed', komship_status = ${d.status},
+            tracking_number = coalesce(nullif(${d.awb}, ''), tracking_number)
+        where order_number = ${on}`;
+    } else {
+      await sql`
+        update domanic.orders
+        set komship_status = ${d.status},
+            tracking_number = coalesce(nullif(${d.awb}, ''), tracking_number)
+        where order_number = ${on}`;
+    }
+    return { ok: true, order: await fetchOrderPlain(sql, on) };
+  } catch (e) {
+    return { ok: false, error: e?.message || "Gagal refresh status." };
+  }
 }
 
 // Set stok awal parfum (dipanggil dari drawer Data Parfum). Return nilai baru.
