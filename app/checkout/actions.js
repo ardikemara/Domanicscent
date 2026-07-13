@@ -2,7 +2,7 @@
 
 import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
-import { createSnapTransaction } from "@/lib/midtrans";
+import { createPayment, getMethods } from "@/lib/komercePay";
 import { searchDestination, quoteJne } from "@/lib/rajaongkir";
 import { sendEmail, personaResultEmail, orderConfirmationEmail, welcomeEmail } from "@/lib/email";
 
@@ -181,7 +181,7 @@ export async function createOrder(payload) {
            shipping_destination_id, shipping_courier, shipping_etd)
         values
           ('DMN-' || to_char(now() at time zone 'Asia/Jakarta','YYYYMMDD') || '-' || lpad(nextval('domanic.order_seq')::text, 4, '0'),
-           ${custId}, 'pending', 'unpaid', 'midtrans',
+           ${custId}, 'pending', 'unpaid', 'komerce',
            ${subtotal}, ${discount}, ${shipping}, ${total}, ${promoApplied},
            ${c.name}, ${c.phone}, ${c.address}, ${destinationLabel || c.city || null}, ${c.note || null},
            ${destinationId}, ${ship.service ? 'jne' : null}, ${ship.etd || null})
@@ -218,69 +218,66 @@ export async function createOrder(payload) {
       // diamkan, order tetap jadi
     }
 
-    // Bikin transaksi Snap di Midtrans. Kalau gagal, order tetap tersimpan
-    // (payment_status 'unpaid') dan customer bisa bayar ulang dari thank-you page.
-    let snapToken = null;
-    try {
-      const snap = await createSnapTransaction({
-        orderNumber,
-        total,
-        items: lines,
-        discount,
-        shipping,
-        customer: c,
-      });
-      snapToken = snap.token;
-      await sql`
-        update domanic.orders
-        set snap_token = ${snapToken}, payment_status = 'pending'
-        where order_number = ${orderNumber}`;
-    } catch (e) {
-      // biarkan snapToken null; UI akan mengarahkan ke thank-you dengan opsi bayar ulang
-    }
-
-    return { ok: true, orderNumber, snapToken };
+    // Pembayaran dibuat nanti di halaman /pay saat customer pilih metode
+    // (VA bank / QRIS), lewat startKomercePayment. Order tetap tersimpan
+    // (payment_status 'unpaid') sampai itu.
+    return { ok: true, orderNumber };
   } catch (e) {
     return { ok: false, error: "Gagal: " + (e?.message || String(e)) };
   }
 }
 
-// Ambil (atau bikin ulang) snap token untuk order yang belum dibayar.
-// Dipakai tombol "Bayar sekarang" di thank-you page.
-export async function getSnapToken(orderNumber) {
+// List metode bayar Komerce buat picker di halaman /pay.
+export async function getKomerceMethods() {
+  try {
+    return { ok: true, methods: await getMethods() };
+  } catch {
+    return { ok: false, methods: [] };
+  }
+}
+
+// Bikin transaksi Komerce untuk metode yang dipilih customer, lalu balikin
+// payment_url (halaman bayar hosted Komerce) buat di-redirect.
+// paymentType: "qris" | "bank_transfer". channelCode wajib untuk bank_transfer.
+export async function startKomercePayment(orderNumber, channelCode, paymentType) {
   const clean = (orderNumber || "").trim();
   if (!clean) return { ok: false, error: "Order nggak ketemu." };
+  const type = paymentType === "qris" ? "qris" : "bank_transfer";
+  if (type === "bank_transfer" && !channelCode) {
+    return { ok: false, error: "Pilih bank dulu." };
+  }
   try {
     const sql = getSql();
     const rows = await sql`
-      select o.order_number, o.total, o.discount, o.shipping, o.payment_status, o.snap_token,
-             o.name, o.phone, o.shipping_address, o.shipping_city,
-             c.email
+      select o.order_number, o.total, o.payment_status, o.name, o.phone, c.email
       from domanic.orders o
       left join domanic.customers c on c.id = o.customer_id
       where o.order_number = ${clean} limit 1`;
     if (rows.length === 0) return { ok: false, error: "Order nggak ketemu." };
     const o = rows[0];
     if (o.payment_status === "paid") return { ok: false, error: "Order ini sudah dibayar." };
-    if (o.snap_token) return { ok: true, snapToken: o.snap_token };
 
     const items = await sql`
-      select product_slug, product_name, unit_price, qty
+      select product_name, qty, unit_price
       from domanic.order_items
       where order_id = (select id from domanic.orders where order_number = ${clean})`;
 
-    const snap = await createSnapTransaction({
+    const pay = await createPayment({
       orderNumber: o.order_number,
-      total: o.total,
-      items: items.map((it) => ({ slug: it.product_slug, name: it.product_name, unit: it.unit_price, qty: it.qty })),
-      discount: o.discount,
-      shipping: o.shipping,
-      customer: { name: o.name, phone: o.phone, email: o.email, address: o.shipping_address, city: o.shipping_city },
+      amount: o.total,
+      paymentType: type,
+      channelCode,
+      customer: { name: o.name, email: o.email, phone: o.phone },
+      items: items.map((it) => ({ name: it.product_name, quantity: it.qty, price: it.unit_price })),
     });
+
     await sql`
-      update domanic.orders set snap_token = ${snap.token}, payment_status = 'pending'
+      update domanic.orders
+      set komerce_payment_id = ${pay.paymentId}, komerce_payment_url = ${pay.paymentUrl},
+          payment_status = 'pending'
       where order_number = ${clean}`;
-    return { ok: true, snapToken: snap.token };
+
+    return { ok: true, paymentUrl: pay.paymentUrl };
   } catch (e) {
     return { ok: false, error: "Gagal menyiapkan pembayaran, coba lagi." };
   }

@@ -15,7 +15,7 @@ async function fetchData(q, pay) {
            o.subtotal, o.discount, o.shipping, o.total, o.promo_code,
            o.payment_status, o.payment_method, o.status, o.tracking_number,
            o.shipping_address, o.shipping_city, o.shipping_etd, o.note,
-           o.midtrans_transaction_id, o.paid_at, o.shipped_at, o.created_at,
+           o.midtrans_transaction_id, o.komerce_payment_id, o.paid_at, o.shipped_at, o.created_at,
            c.email
     from domanic.orders o
     left join domanic.customers c on c.id = o.customer_id

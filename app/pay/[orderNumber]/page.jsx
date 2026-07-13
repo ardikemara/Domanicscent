@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
-import SnapEmbed from "@/components/payment/SnapEmbed";
+import { getMethods } from "@/lib/komercePay";
+import KomercePicker from "@/components/payment/KomercePicker";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,14 @@ async function fetchOrder(orderNumber) {
   }
 }
 
+async function fetchMethods() {
+  try {
+    return await getMethods();
+  } catch {
+    return [];
+  }
+}
+
 export default async function PayPage({ params }) {
   const orderNumber = decodeURIComponent(params?.orderNumber || "");
   const data = await fetchOrder(orderNumber);
@@ -36,6 +45,7 @@ export default async function PayPage({ params }) {
   if (data.order.payment_status === "paid") {
     redirect(`/thank-you?order=${encodeURIComponent(orderNumber)}`);
   }
+  const methods = await fetchMethods();
 
   return (
     <div className="wrap pay">
@@ -43,7 +53,7 @@ export default async function PayPage({ params }) {
       <h1>Selesaikan pembayaranmu.</h1>
       <p className="pay__lead">
         Order <b>{data.order.order_number}</b> atas nama {data.order.name}. Pilih metode di bawah,
-        pembayaran diproses aman oleh Midtrans.
+        pembayaran diproses aman oleh Komerce.
       </p>
 
       <div className="pay__grid">
@@ -64,13 +74,17 @@ export default async function PayPage({ params }) {
             <div className="grand"><span>Total</span><span>{rupiah(data.order.total)}</span></div>
           </div>
           <p className="pay__note">
-            Simpan link halaman ini. Kalau kamu keluar sebelum bayar, buka lagi kapan pun selama 24 jam
-            untuk melanjutkan pembayaran.
+            Simpan link halaman ini. Kalau kamu keluar sebelum bayar, buka lagi kapan pun untuk
+            memilih metode dan melanjutkan pembayaran.
           </p>
           <Link className="pay__back" href="/#collection">Kembali ke koleksi</Link>
         </aside>
 
-        <SnapEmbed orderNumber={data.order.order_number} />
+        <KomercePicker
+          orderNumber={data.order.order_number}
+          methods={methods}
+          total={data.order.total}
+        />
       </div>
     </div>
   );

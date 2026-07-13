@@ -70,7 +70,7 @@ export default async function AdminOrderDetail({ params, searchParams }) {
           <h3>Pembayaran</h3>
           <div className="adm__kv"><span>Status</span><span>{o.payment_status}</span></div>
           <div className="adm__kv"><span>Metode</span><span>{o.payment_method}</span></div>
-          <div className="adm__kv"><span>Midtrans ID</span><span>{o.midtrans_transaction_id || "-"}</span></div>
+          <div className="adm__kv"><span>Payment ID</span><span>{o.komerce_payment_id || o.midtrans_transaction_id || "-"}</span></div>
           <div className="adm__kv"><span>Dibayar</span><span>{fmt(o.paid_at)}</span></div>
           <div className="adm__kv"><span>Order dibuat</span><span>{fmt(o.created_at)}</span></div>
         </section>
