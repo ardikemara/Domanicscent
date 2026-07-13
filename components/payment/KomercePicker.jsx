@@ -4,6 +4,24 @@ import { useState } from "react";
 import { startKomercePayment } from "@/app/checkout/actions";
 import { rupiah } from "@/lib/products";
 
+// Logo metode dengan fallback: kalau file logo dari Komerce 404 (kejadian di
+// qris.png), tampilkan nama metodenya sebagai teks.
+function MethodLogo({ method }) {
+  const [broken, setBroken] = useState(false);
+  if (!method.logo_url || broken) {
+    return <span className="paypick__name">{method.display_name || "QRIS"}</span>;
+  }
+  return (
+    <img
+      src={method.logo_url}
+      alt={method.display_name}
+      className="paypick__logo"
+      loading="lazy"
+      onError={() => setBroken(true)}
+    />
+  );
+}
+
 export default function KomercePicker({ orderNumber, methods, total }) {
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
@@ -66,11 +84,7 @@ export default function KomercePicker({ orderNumber, methods, total }) {
                 disabled={dis || loading}
                 onClick={() => choose(m)}
               >
-                {m.logo_url ? (
-                  <img src={m.logo_url} alt={m.display_name} className="paypick__logo" loading="lazy" />
-                ) : (
-                  <span className="paypick__name">{m.display_name}</span>
-                )}
+                <MethodLogo method={m} />
                 <span className="paypick__go">{loading ? "Menyiapkan..." : "Pilih"}</span>
               </button>
             );
@@ -88,11 +102,7 @@ export default function KomercePicker({ orderNumber, methods, total }) {
               disabled={disabledReason(qris) || (busy && busy !== "qris")}
               onClick={() => choose(qris)}
             >
-              {qris.logo_url ? (
-                <img src={qris.logo_url} alt="QRIS" className="paypick__logo" loading="lazy" />
-              ) : (
-                <span className="paypick__name">QRIS</span>
-              )}
+              <MethodLogo method={qris} />
               <span className="paypick__go">{busy === "qris" ? "Menyiapkan..." : "Pilih"}</span>
             </button>
           </div>
