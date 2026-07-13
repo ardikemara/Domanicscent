@@ -1,7 +1,9 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
+import { REF_COOKIE, validSlug } from "@/lib/affiliate";
 import { createPayment, getMethods } from "@/lib/komercePay";
 import { searchDestination, quoteJne } from "@/lib/rajaongkir";
 import { sendEmail, personaResultEmail, orderConfirmationEmail, welcomeEmail } from "@/lib/email";
@@ -147,6 +149,19 @@ export async function createOrder(payload) {
     const sql = getSql();
     let orderNumber = null;
 
+    // Atribusi affiliate (last-touch): cookie referral -> affiliate approved.
+    // Best-effort; kalau gagal, order tetap jalan tanpa atribusi.
+    let affiliateId = null;
+    try {
+      const refSlug = validSlug(cookies().get(REF_COOKIE)?.value);
+      if (refSlug) {
+        const aff = await sql`
+          select id from domanic.affiliates
+          where slug = ${refSlug} and status = 'approved' limit 1`;
+        if (aff.length) affiliateId = aff[0].id;
+      }
+    } catch {}
+
     await sql.begin(async (tx) => {
       // Cari customer lama (dedup by email, fallback HP) biar 1 orang = 1 customer.
       // Kalau ketemu, reuse + update kontak ke yang terbaru; kalau nggak, insert baru.
@@ -178,13 +193,13 @@ export async function createOrder(payload) {
           (order_number, customer_id, status, payment_status, payment_method,
            subtotal, discount, shipping, total, promo_code,
            name, phone, shipping_address, shipping_city, note,
-           shipping_destination_id, shipping_courier, shipping_etd)
+           shipping_destination_id, shipping_courier, shipping_etd, affiliate_id)
         values
           ('DMN-' || to_char(now() at time zone 'Asia/Jakarta','YYYYMMDD') || '-' || lpad(nextval('domanic.order_seq')::text, 4, '0'),
            ${custId}, 'pending', 'unpaid', 'komerce',
            ${subtotal}, ${discount}, ${shipping}, ${total}, ${promoApplied},
            ${c.name}, ${c.phone}, ${c.address}, ${destinationLabel || c.city || null}, ${c.note || null},
-           ${destinationId}, ${ship.service ? 'jne' : null}, ${ship.etd || null})
+           ${destinationId}, ${ship.service ? 'jne' : null}, ${ship.etd || null}, ${affiliateId})
         returning order_number`;
       orderNumber = order.order_number;
 

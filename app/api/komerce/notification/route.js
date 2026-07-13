@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSql } from "@/lib/db";
 import { getStatus, mapStatus, verifyCallback } from "@/lib/komercePay";
 import { sendEmail, paymentReceivedEmail } from "@/lib/email";
+import { COMMISSION_RATE, HOLD_DAYS, commissionFor } from "@/lib/affiliate";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +78,36 @@ export async function POST(req) {
             komerce_payment_id = ${statusPaymentId}, paid_at = now()
         where order_number = ${ord.order_number}`;
 
+      // Komisi affiliate (best-effort, idempotent via unique order_id).
+      // 15% dari subtotal setelah diskon, tanpa ongkir. Masa tahan 7 hari.
+      // Self-referral (email/HP order = email/HP affiliate) langsung void.
+      try {
+        const [row] = await sql`
+          select o.id, o.subtotal, o.discount, o.affiliate_id, o.phone, c.email,
+                 a.email as aff_email, a.phone as aff_phone
+          from domanic.orders o
+          left join domanic.customers c on c.id = o.customer_id
+          left join domanic.affiliates a on a.id = o.affiliate_id
+          where o.order_number = ${ord.order_number} limit 1`;
+        if (row?.affiliate_id) {
+          const { base, amount } = commissionFor(row.subtotal, row.discount);
+          const selfRef =
+            (row.email && row.aff_email && row.email.toLowerCase() === row.aff_email.toLowerCase()) ||
+            (row.phone && row.aff_phone && row.phone.replace(/[^\d]/g, "") === row.aff_phone.replace(/[^\d]/g, ""));
+          if (amount > 0) {
+            await sql`
+              insert into domanic.affiliate_commissions
+                (affiliate_id, order_id, base_amount, rate, amount, status, eligible_at)
+              values
+                (${row.affiliate_id}, ${row.id}, ${base}, ${COMMISSION_RATE}, ${amount},
+                 ${selfRef ? "void" : "pending"}, now() + make_interval(days => ${HOLD_DAYS}))
+              on conflict (order_id) do nothing`;
+          }
+        }
+      } catch (e) {
+        // diamkan; komisi bisa direkonsiliasi manual kalau perlu
+      }
+
       // Email "pembayaran diterima" (best-effort). Guard "already paid" di atas
       // mastiin ini cuma jalan sekali per order.
       try {
@@ -104,6 +135,15 @@ export async function POST(req) {
         update domanic.orders
         set payment_status = ${paymentStatus}, komerce_payment_id = ${statusPaymentId}
         where order_number = ${ord.order_number}`;
+      // Order refund: komisi affiliate (kalau ada, dan belum dibayar) hangus.
+      if (paymentStatus === "refunded") {
+        try {
+          await sql`
+            update domanic.affiliate_commissions set status = 'void'
+            where order_id = (select id from domanic.orders where order_number = ${ord.order_number})
+              and status in ('pending', 'eligible')`;
+        } catch {}
+      }
     }
 
     return NextResponse.json({ ok: true, verified });
