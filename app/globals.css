@@ -800,3 +800,21 @@ footer{background:var(--charcoal);color:var(--beige)}
   .admshell__side.is-open{transform:translateX(0)}
   .admshell__main .adm{padding-top:70px}
 }
+
+/* ===== Promo popup (journal exit-intent / timer) ===== */
+.promopop{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px}
+.promopop__backdrop{position:absolute;inset:0;background:rgba(42,36,32,.55);backdrop-filter:blur(3px)}
+.promopop__card{position:relative;background:var(--off-white);border-radius:16px;padding:38px 34px 30px;max-width:400px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(20,14,8,.35);animation:promopop-in .28s ease}
+@keyframes promopop-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.promopop__close{position:absolute;top:10px;right:14px;background:none;border:0;font-size:1.6rem;line-height:1;color:var(--taupe);cursor:pointer;padding:6px}
+.promopop__close:hover{color:var(--charcoal)}
+.promopop__eyebrow{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--taupe);margin-bottom:10px}
+.promopop__title{font-family:var(--disp);font-weight:400;font-size:1.45rem;color:var(--umber);margin-bottom:10px}
+.promopop__text{font-size:.88rem;color:var(--charcoal);line-height:1.6;margin-bottom:18px}
+.promopop__code{display:block;width:100%;background:var(--cream);border:1px dashed var(--beige);border-radius:12px;padding:14px;cursor:pointer;margin-bottom:16px}
+.promopop__code span{display:block;font-family:var(--disp);font-size:1.35rem;letter-spacing:.24em;color:var(--umber);padding-left:.24em}
+.promopop__code small{display:block;font-size:.68rem;color:var(--taupe);margin-top:4px}
+.promopop__cta{width:100%}
+.promopop__later{display:block;margin:12px auto 0;background:none;border:0;font-size:.76rem;color:var(--taupe);text-decoration:underline;cursor:pointer}
+.promopop__later:hover{color:var(--charcoal)}
+@media(max-width:480px){.promopop__card{padding:32px 22px 24px}}
