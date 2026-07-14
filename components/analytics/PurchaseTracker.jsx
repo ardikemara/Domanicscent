@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { trackPurchase } from "@/lib/analytics";
+import { isAnalyticsEnabled, trackPurchase } from "@/lib/analytics";
 
 // Fire purchase HANYA lewat payload server (/api/analytics/purchase-payload).
 // Server cuma ngasih payload sekali per order (kolom analytics_tracked_at),
@@ -11,6 +11,9 @@ export default function PurchaseTracker({ orderNumber }) {
 
   useEffect(() => {
     if (doneRef.current || !orderNumber) return;
+    // Di preview/dev jangan panggil API sama sekali: payload purchase cuma
+    // keluar SEKALI per order, jangan sampai kebakar tanpa event kekirim.
+    if (!isAnalyticsEnabled()) return;
     doneRef.current = true;
 
     async function run() {
