@@ -69,6 +69,8 @@ Catatan: key sandbox Midtrans akun baru TIDAK pakai prefix `SB-Mid-`; formatnya 
 - Event yang terpasang: `view_item`/`ViewContent` (PDP), `add_to_cart`/`AddToCart`, `begin_checkout`/`InitiateCheckout` (value = subtotal produk TANPA ongkir), `view_item_list` (homepage + persona), `purchase`/`Purchase`.
 - **Purchase server-authoritative:** payload WAJIB dari `POST /api/analytics/purchase-payload` yang cek `payment_status = 'paid'` + set `orders.analytics_tracked_at` secara atomic. Jangan pernah fire purchase langsung dari client on-mount.
 - Route `/admin/*` TIDAK di-track sama sekali: `components/Analytics.jsx` return null di admin (script nggak di-load) + guard `isAdminPage()` di `lib/analytics.js`.
+- **Analytics HANYA hidup di production**: guard ganda `isAnalyticsEnabled()` di `lib/analytics.js` (build `NEXT_PUBLIC_VERCEL_ENV === 'production'` via `next.config.mjs` DAN hostname domanicscent.com). Preview deploy + local dev: script nggak di-inject, semua helper no-op, PurchaseTracker nggak manggil API.
+- **Parameter `persona`** (custom dimension GA4, event-scoped): dikirim di view_item, add_to_cart, begin_checkout, purchase (multi-produk = daftar unik dipisah koma), per item di items array, dan page_view khusus `/products/[slug]` + `/persona/[slug]`. Mapping cuma dari `lib/products.js` (field persona), jangan duplikasi.
 - Currency selalu `IDR`, harga integer tanpa titik. Meta purchase pakai `eventID` = order number (buat dedup Conversions API fase 2).
 
 ## Konvensi Kode & Copy
