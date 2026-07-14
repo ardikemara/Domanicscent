@@ -63,6 +63,14 @@ lib/
 
 Catatan: key sandbox Midtrans akun baru TIDAK pakai prefix `SB-Mid-`; formatnya sama dengan production. Yang menentukan sandbox/prod adalah flag `*_IS_PRODUCTION`, bukan bentuk key.
 
+## Analytics
+
+- **Semua event GA4 + Meta Pixel lewat `lib/analytics.js`. JANGAN pernah panggil `gtag()` atau `fbq()` langsung dari komponen.** Kalau nanti pindah GTM atau nambah Conversions API, cuma file itu yang berubah.
+- Event yang terpasang: `view_item`/`ViewContent` (PDP), `add_to_cart`/`AddToCart`, `begin_checkout`/`InitiateCheckout` (value = subtotal produk TANPA ongkir), `view_item_list` (homepage + persona), `purchase`/`Purchase`.
+- **Purchase server-authoritative:** payload WAJIB dari `POST /api/analytics/purchase-payload` yang cek `payment_status = 'paid'` + set `orders.analytics_tracked_at` secara atomic. Jangan pernah fire purchase langsung dari client on-mount.
+- Route `/admin/*` TIDAK di-track sama sekali: `components/Analytics.jsx` return null di admin (script nggak di-load) + guard `isAdminPage()` di `lib/analytics.js`.
+- Currency selalu `IDR`, harga integer tanpa titik. Meta purchase pakai `eventID` = order number (buat dedup Conversions API fase 2).
+
 ## Konvensi Kode & Copy
 
 - **Copy website campuran Indonesia + English (campuran), bukan English murni.** Nada langsung, santai, ringkas.

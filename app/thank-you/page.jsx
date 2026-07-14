@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSql } from "@/lib/db";
 import { rupiah } from "@/lib/products";
+import PurchaseTracker from "@/components/analytics/PurchaseTracker";
 
 function isPaid(s) {
   return s === "paid";
@@ -51,6 +52,7 @@ export default async function ThankYou({ searchParams }) {
 
   return (
     <div className="wrap thanks">
+      {data && <PurchaseTracker orderNumber={data.order.order_number} />}
       <p className="eyebrow">Order diterima</p>
       <h1>Terima kasih, pesananmu sudah masuk.</h1>
 

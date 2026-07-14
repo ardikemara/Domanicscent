@@ -3,10 +3,12 @@ import { products } from "@/lib/products";
 import { articles } from "@/lib/journal";
 import ProductCard from "@/components/ProductCard";
 import NewsletterForm from "@/components/NewsletterForm";
+import TrackViewItemList from "@/components/analytics/TrackViewItemList";
 
 export function Collection() {
   return (
     <section className="sec collection" id="collection">
+      <TrackViewItemList slugs={products.map((p) => p.slug)} listName="Homepage Collection" />
       <div className="wrap">
         <div className="sec__head">
           <p className="eyebrow">Empat parfum · Satu jadi milikmu</p>

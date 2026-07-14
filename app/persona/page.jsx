@@ -1,4 +1,6 @@
 import PersonaQuiz from "@/components/PersonaQuiz";
+import { products } from "@/lib/products";
+import TrackViewItemList from "@/components/analytics/TrackViewItemList";
 
 export const metadata = {
   title: "Find Your Persona · Parfum Sesuai Kepribadian · DOMANIC",
@@ -17,6 +19,7 @@ export const metadata = {
 export default function PersonaPage() {
   return (
     <section className="qzpage">
+      <TrackViewItemList slugs={products.map((p) => p.slug)} listName="Persona Quiz" />
       <div className="qzpage__bg" aria-hidden="true">
         <img className="qzbg qzbg--tl" src="/images/quiz/quiz-velvet.webp" alt="" />
         <img className="qzbg qzbg--tr" src="/images/quiz/quiz-lily.webp" alt="" />
