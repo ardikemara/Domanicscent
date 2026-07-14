@@ -32,8 +32,9 @@ export default function DaftarForm() {
         <h3>Pendaftaran diterima 🎉</h3>
         <p>
           Makasih udah daftar. Tim kami bakal review akunmu (biasanya 1-2 hari kerja).
-          Kalau di-approve, link kamu aktif di <b>domanicscent.com/r/{doneSlug}</b> dan
-          kami kabari lewat email.
+          Kalau di-approve, link kamu aktif di <b>domanicscent.com/r/{doneSlug}</b>, kami
+          kabari lewat email, dan kamu bisa masuk dashboard lewat{" "}
+          <a href="/affiliate/login">halaman login affiliate</a>.
         </p>
       </div>
     );

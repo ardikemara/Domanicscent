@@ -33,6 +33,7 @@ export default function Footer() {
             <li><Link href="/persona">Find your persona</Link></li>
             <li><a href="https://www.instagram.com/domanicscent/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
             <li><Link href="/journal">Journal</Link></li>
+            <li><Link href="/affiliate/daftar">Daftar affiliate</Link></li>
           </ul>
         </div>
       </div>
