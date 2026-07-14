@@ -854,3 +854,9 @@ footer{background:var(--charcoal);color:var(--beige)}
 .affdash__settings{max-width:420px}
 .affdash__settings .field{margin-bottom:14px}
 @media(max-width:640px){.affdash__head{flex-direction:column}.affdash__linkrow .btn{width:100%}}
+
+/* ===== Cashout ===== */
+.affdash__cashout{margin:2px 0 12px}
+.affdash__cashout .field__hint{margin-top:8px}
+.affdash__cashoutok{font-size:.85rem;color:var(--umber);background:var(--cream);border-radius:10px;padding:12px 16px;margin:2px 0 12px}
+.adm__muted{color:var(--taupe);font-size:.78rem}

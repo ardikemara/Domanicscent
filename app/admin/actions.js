@@ -6,7 +6,7 @@ import { getSql } from "@/lib/db";
 import { products } from "@/lib/products";
 import { checkPassword, createSessionCookie, clearSessionCookie, isAdmin } from "@/lib/adminAuth";
 import { calculateTariff, pickJne, storeOrder, requestPickup, printLabel, getDetail, mapKomshipStatus } from "@/lib/komship";
-import { sendEmail, affiliateApprovedEmail } from "@/lib/email";
+import { sendEmail, affiliateApprovedEmail, payoutPaidEmail } from "@/lib/email";
 
 export async function loginAdmin(formData) {
   const pw = formData.get("password");
@@ -160,6 +160,60 @@ export async function setAffiliateStatus(id, status) {
     } catch {}
   }
   return { ok: true, affiliate: await fetchAffiliatePlain(sql, id) };
+}
+
+// ---- Cashout affiliate (Komisi & Cashout) ----
+
+async function fetchPayoutPlain(sql, id) {
+  const rows = await sql`
+    select p.id, p.amount, p.status, p.requested_at, p.paid_at, p.note,
+           a.name, a.slug, a.email, a.phone, a.bank_name, a.bank_account, a.bank_holder
+    from domanic.affiliate_payouts p
+    join domanic.affiliates a on a.id = p.affiliate_id
+    where p.id = ${id} limit 1`;
+  return rows[0] ? { ...rows[0] } : null;
+}
+
+// Tandai pengajuan sudah ditransfer: payout paid + semua komisinya paid + email.
+export async function markPayoutPaid(id) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const sql = getSql();
+  const [row] = await sql`
+    update domanic.affiliate_payouts set status = 'paid', paid_at = now()
+    where id = ${id} and status = 'requested'
+    returning id, affiliate_id, amount`;
+  if (!row) return { ok: false, error: "Pengajuan nggak ketemu atau udah diproses." };
+  await sql`
+    update domanic.affiliate_commissions
+    set status = 'paid', paid_at = now()
+    where payout_id = ${id} and status = 'requested'`;
+
+  try {
+    const p = await fetchPayoutPlain(sql, id);
+    if (p?.email) {
+      const masked = String(p.bank_account || "").length > 4 ? "****" + String(p.bank_account).slice(-4) : p.bank_account;
+      const { subject, html } = payoutPaidEmail({ name: p.name, amount: p.amount, bankName: p.bank_name, bankAccountMasked: masked });
+      await sendEmail({ to: p.email, subject, html });
+    }
+  } catch {}
+  return { ok: true, payout: await fetchPayoutPlain(sql, id) };
+}
+
+// Tolak pengajuan (mis. data rekening salah): komisi balik jadi eligible.
+export async function rejectPayout(id, note) {
+  if (!isAdmin()) return { ok: false, error: "Sesi habis, login ulang." };
+  const sql = getSql();
+  const cleanNote = (note || "").toString().trim().slice(0, 300) || null;
+  const [row] = await sql`
+    update domanic.affiliate_payouts set status = 'rejected', note = ${cleanNote}
+    where id = ${id} and status = 'requested'
+    returning id`;
+  if (!row) return { ok: false, error: "Pengajuan nggak ketemu atau udah diproses." };
+  await sql`
+    update domanic.affiliate_commissions
+    set status = 'eligible', payout_id = null
+    where payout_id = ${id} and status = 'requested'`;
+  return { ok: true, payout: await fetchPayoutPlain(sql, id) };
 }
 
 // ---- Komship (pengiriman otomatis) ----
