@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { products, getProduct, rupiah } from "@/lib/products";
 import AddToCart from "@/components/AddToCart";
+import TrackViewItem from "@/components/analytics/TrackViewItem";
 import ScentNotes from "@/components/ScentNotes";
 import ScentStory from "@/components/ScentStory";
 
@@ -68,6 +69,7 @@ export default function ProductPage({ params }) {
 
   return (
     <div className="wrap pdp">
+      <TrackViewItem slug={p.slug} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p)) }}

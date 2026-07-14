@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart, rupiah } from "@/components/cart/CartContext";
 import { createOrder, checkPromo, findDestinations, quoteShipping } from "@/app/checkout/actions";
+import { trackBeginCheckout } from "@/lib/analytics";
 
 const FREE_SHIP_MIN = 500000;
 
@@ -61,6 +62,14 @@ export default function CheckoutPage() {
       alive = false;
     };
   }, [dest, subtotal, items]);
+
+  // begin_checkout sekali per mount (refresh halaman = fire lagi, itu normal).
+  const trackedRef = useRef(false);
+  useEffect(() => {
+    if (trackedRef.current || items.length === 0) return;
+    trackedRef.current = true;
+    trackBeginCheckout(items.map((it) => ({ slug: it.slug, qty: it.qty })));
+  }, [items]);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
