@@ -46,6 +46,14 @@ const articleFaqs = [
     a: "Simpan parfum di wadah tertutup rapat, di tempat gelap dan sejuk dengan suhu stabil, lalu diamkan 2 sampai 4 minggu. Yang perlu diingat: maserasi paling efektif dilakukan produsen sebelum pembotolan, di tangki dengan kontrol suhu, bukan sekadar menyimpan botol di rumah.",
   },
   {
+    q: "Apa bedanya maserasi dan resting parfum?",
+    a: "Pada dasarnya tidak ada bedanya, keduanya proses mengistirahatkan parfum supaya molekulnya menyatu. Maserasi adalah istilah teknis industri, resting adalah sebutan sehari-hari di komunitas fragrance Indonesia. Sebagian orang memakai resting khusus untuk parfum yang didiamkan di rumah setelah dibeli.",
+  },
+  {
+    q: "Apa itu resting parfum?",
+    a: "Resting parfum adalah proses mengistirahatkan parfum setelah formulanya selesai dicampur, umumnya 2 sampai 4 minggu, supaya molekul minyak wangi dan alkohol menyatu sebelum dibotolkan. Ini istilah sehari-hari untuk maserasi.",
+  },
+  {
     q: "Apakah parfum yang baru dibeli bisa dimaserasi sendiri di rumah?",
     a: "Menyimpan parfum baru beberapa minggu di tempat gelap dan sejuk memang bisa sedikit menghaluskan aromanya. Tapi maserasi yang sebenarnya terjadi sebelum pembotolan, di tangki, dengan kontrol suhu. Itu yang tidak bisa direplikasi di rumah.",
   },
@@ -122,7 +130,27 @@ export default function Article() {
       </section>
 
       <section className="infopage__item">
-        <h2>Berapa lama maserasi parfum?</h2>
+        <h2>Maserasi dan Resting, Apakah Sama?</h2>
+        <p>
+          Ya, keduanya proses yang sama. Resting parfum adalah proses mengistirahatkan parfum
+          setelah formulanya selesai dicampur, umumnya 2 sampai 4 minggu, supaya molekulnya menyatu
+          sebelum dibotolkan. Itu definisi yang persis sama dengan maserasi.
+        </p>
+        <p>
+          Kenapa ada dua istilah? Maserasi adalah istilah teknis yang dipakai industri parfum,
+          sementara resting adalah sebutan sehari-hari yang lebih populer di komunitas fragrance
+          Indonesia. Satu proses, dua bahasa.
+        </p>
+        <p>
+          Satu nuansa kecil biar jujur: sebagian orang memakai kata resting juga untuk parfum yang
+          sudah dibeli lalu didiamkan beberapa minggu di rumah sebelum dipakai. Sementara maserasi
+          lebih spesifik merujuk ke proses sebelum pembotolan, di tangki produsen dengan kontrol
+          suhu. Prinsipnya sama, skalanya yang beda.
+        </p>
+      </section>
+
+      <section className="infopage__item">
+        <h2>Berapa Lama Maserasi Parfum? (Resting Parfum Berapa Lama?)</h2>
         <p>
           Maserasi parfum umumnya butuh 2 sampai 4 minggu, atau sekitar 14 sampai 30 hari. Beberapa
           rumah parfum memakai waktu lebih lama lagi: Le Labo me-resting parfumnya sekitar 3 minggu,
@@ -143,6 +171,14 @@ export default function Article() {
           Ini bagian dari prinsip yang sama dengan cara kami menyusun formula:{" "}
           <Link href="/journal/apa-itu-extrait-de-parfum">extrait de parfum</Link> yang dibuat pelan,
           bukan dikejar tanggal rilis. We don't sell unfinished perfume.
+        </p>
+        <p>
+          Ini juga alasan kenapa maserasi berhubungan langsung dengan ketahanan. Parfum yang belum
+          dimaserasi punya molekul yang belum saling mengikat, dan molekul yang belum terikat
+          menguap lebih cepat serta tidak merata di kulit. Karena itu parfum yang sudah dimaserasi
+          bertahan lebih lama. Kalau kamu mau wanginya makin awet lagi, lengkapi dengan{" "}
+          <Link href="/journal/cara-pakai-parfum-biar-tahan-lama">cara pakai parfum biar tahan
+          lama</Link>.
         </p>
         <figure className="article__fig">
           <img src="/images/journal/maserasi-artikel-label.webp" alt="Menulis label tanggal batch maserasi dengan bolpen di samping deretan botol extrait de parfum Domanic" width="1200" height="900" loading="lazy" />
