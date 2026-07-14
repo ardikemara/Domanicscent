@@ -5,6 +5,7 @@ import { rupiah } from "@/lib/products";
 import { logoutAffiliate } from "@/app/affiliate/actions";
 import CopyLink from "@/components/affiliate/CopyLink";
 import SettingsForm from "@/components/affiliate/SettingsForm";
+import CashoutButton from "@/components/affiliate/CashoutButton";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -56,7 +57,20 @@ async function fetchData(affiliateId) {
     order by o.created_at desc
     limit 100`;
 
-  return { aff: { ...aff }, stats: { ...stats }, orders: orders.map((o) => ({ ...o })) };
+  // Riwayat pencairan.
+  const payouts = await sql`
+    select amount, status, requested_at, paid_at, note
+    from domanic.affiliate_payouts
+    where affiliate_id = ${affiliateId}
+    order by requested_at desc
+    limit 50`;
+
+  return {
+    aff: { ...aff },
+    stats: { ...stats },
+    orders: orders.map((o) => ({ ...o })),
+    payouts: payouts.map((p) => ({ ...p })),
+  };
 }
 
 export default async function AffiliateDashboardPage() {
@@ -64,8 +78,13 @@ export default async function AffiliateDashboardPage() {
   if (!affiliateId) redirect("/affiliate/login");
   const data = await fetchData(affiliateId);
   if (!data) redirect("/affiliate/login?e=1");
-  const { aff, stats, orders } = data;
+  const { aff, stats, orders, payouts } = data;
   const link = `https://www.domanicscent.com/r/${aff.slug}`;
+  const PAYOUT_LABEL = {
+    requested: { label: "Diproses (maks 3 hari kerja)", kind: "pending" },
+    paid: { label: "Sudah ditransfer", kind: "paid" },
+    rejected: { label: "Ditolak", kind: "failed" },
+  };
 
   return (
     <div className="wrap affdash">
@@ -90,11 +109,39 @@ export default async function AffiliateDashboardPage() {
         <div className="affdash__stat"><span>Sudah dibayar</span><b>{rupiah(stats.komisi_paid + stats.komisi_requested)}</b></div>
       </div>
 
+      <CashoutButton eligible={stats.komisi_eligible} />
       <p className="affdash__note">
         Komisi 15% dari harga produk (setelah diskon, tanpa ongkir), kehitung pas order lunas,
-        bisa dicairkan setelah masa tahan 7 hari dengan saldo minimal Rp 250.000. Fitur pengajuan
-        pencairan dari dashboard lagi disiapkan; sementara ini hubungi admin buat cashout.
+        bisa dicairkan setelah masa tahan 7 hari dengan saldo minimal Rp 250.000. Pencairan
+        diproses maksimal 3 hari kerja ke rekening terdaftar.
       </p>
+
+      {payouts.length > 0 && (
+        <section className="affdash__section">
+          <h3>Riwayat pencairan</h3>
+          <div className="adm__tablewrap">
+            <table className="adm__table">
+              <thead>
+                <tr><th>Diajukan</th><th>Jumlah</th><th>Status</th><th>Dibayar</th><th>Catatan</th></tr>
+              </thead>
+              <tbody>
+                {payouts.map((p, i) => {
+                  const pl = PAYOUT_LABEL[p.status] || { label: p.status, kind: "pending" };
+                  return (
+                    <tr key={i}>
+                      <td>{new Date(p.requested_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" })}</td>
+                      <td>{rupiah(p.amount)}</td>
+                      <td><span className={`paybadge paybadge--${pl.kind}`}>{pl.label}</span></td>
+                      <td>{p.paid_at ? new Date(p.paid_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }) : "-"}</td>
+                      <td>{p.note || "-"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="affdash__section">
         <h3>Order dari link kamu</h3>
