@@ -1,7 +1,10 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getSql } from "@/lib/db";
 import { validSlug } from "@/lib/affiliate";
+import { createLoginToken, getAffiliateId, clearAffiliateSession } from "@/lib/affiliateAuth";
+import { sendEmail, affiliateLoginEmail, siteUrl } from "@/lib/email";
 
 // Pendaftaran affiliate (publik). Masuk sebagai status 'pending',
 // admin yang approve manual di Admin > Data Affiliate.
@@ -37,4 +40,54 @@ export async function registerAffiliate(input) {
   } catch (e) {
     return { ok: false, error: "Gagal daftar, coba lagi sebentar lagi." };
   }
+}
+
+// Minta magic link login. Respon selalu generik biar nggak bocorin
+// email mana yang terdaftar.
+export async function requestAffiliateLogin(email) {
+  const clean = (email || "").toString().trim().toLowerCase();
+  const generic = { ok: true, message: "Kalau email itu terdaftar dan aktif, link masuk udah dikirim. Cek inbox (dan folder spam) ya, berlaku 15 menit." };
+  if (!clean.includes("@")) return generic;
+  try {
+    const sql = getSql();
+    const rows = await sql`
+      select id, name from domanic.affiliates
+      where lower(email) = ${clean} and status = 'approved' limit 1`;
+    if (rows.length) {
+      const token = createLoginToken(rows[0].id);
+      const loginUrl = `${siteUrl()}/affiliate/masuk?token=${encodeURIComponent(token)}`;
+      const { subject, html } = affiliateLoginEmail({ name: rows[0].name, loginUrl });
+      await sendEmail({ to: clean, subject, html });
+    }
+  } catch {}
+  return generic;
+}
+
+// Update kontak + rekening dari dashboard (butuh session).
+export async function updateAffiliateProfile(input) {
+  const id = getAffiliateId();
+  if (!id) return { ok: false, error: "Sesi habis, login ulang lewat email." };
+  const phone = (input?.phone || "").toString().trim().slice(0, 40);
+  const bankName = (input?.bank_name || "").toString().trim().slice(0, 60);
+  const bankAccount = (input?.bank_account || "").toString().trim().slice(0, 40);
+  const bankHolder = (input?.bank_holder || "").toString().trim().slice(0, 120);
+  if (!phone || !bankName || !bankAccount || !bankHolder) {
+    return { ok: false, error: "Semua kolom wajib diisi." };
+  }
+  try {
+    const sql = getSql();
+    await sql`
+      update domanic.affiliates
+      set phone = ${phone}, bank_name = ${bankName},
+          bank_account = ${bankAccount}, bank_holder = ${bankHolder}
+      where id = ${id}`;
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Gagal menyimpan, coba lagi." };
+  }
+}
+
+export async function logoutAffiliate() {
+  clearAffiliateSession();
+  redirect("/affiliate/login");
 }

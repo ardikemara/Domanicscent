@@ -835,3 +835,22 @@ footer{background:var(--charcoal);color:var(--beige)}
 .affdaftar__done h3{font-family:var(--disp);font-weight:400;margin-bottom:10px}
 .affdaftar__done p{font-size:.92rem;line-height:1.7;color:var(--charcoal)}
 .adm__linkbtn{background:none;border:0;font-size:.72rem;color:var(--umber);text-decoration:underline;cursor:pointer;padding:0 2px}
+
+/* ===== Dashboard affiliate ===== */
+.affdash{padding-top:56px;padding-bottom:80px}
+.affdash__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.affdash__link{background:var(--cream);border-radius:14px;padding:18px 20px;margin-bottom:22px}
+.affdash__linkrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.affdash__url{font-family:var(--disp);font-size:1rem;letter-spacing:.03em;color:var(--umber);word-break:break-all}
+.affdash__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.affdash__stat{background:#fff;border:1px solid var(--cream);border-radius:12px;padding:14px 16px}
+.affdash__stat span{display:block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px}
+.affdash__stat b{font-size:1.15rem;color:var(--charcoal)}
+.affdash__stat--hi{background:var(--cream);border-color:var(--beige)}
+.affdash__stat--hi b{color:var(--umber)}
+.affdash__note{font-size:.78rem;color:var(--taupe);line-height:1.6;margin-bottom:28px;max-width:640px}
+.affdash__section{margin-bottom:34px}
+.affdash__section h3{font-family:var(--disp);font-weight:400;font-size:1.05rem;letter-spacing:.05em;margin-bottom:14px}
+.affdash__settings{max-width:420px}
+.affdash__settings .field{margin-bottom:14px}
+@media(max-width:640px){.affdash__head{flex-direction:column}.affdash__linkrow .btn{width:100%}}
