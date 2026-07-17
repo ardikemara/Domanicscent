@@ -10,7 +10,7 @@ import { trackBeginCheckout } from "@/lib/analytics";
 const FREE_SHIP_MIN = 500000;
 
 export default function CheckoutPage() {
-  const { items, subtotal, clear } = useCart();
+  const { items, subtotal, clear, ready } = useCart();
   const router = useRouter();
 
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", city: "", note: "" });
@@ -116,6 +116,12 @@ export default function CheckoutPage() {
     clear();
     // Semua pembayaran sekarang di halaman embedded /pay/[order].
     router.push(`/pay/${encodeURIComponent(res.orderNumber)}`);
+  }
+
+  // Keranjang dibaca dari localStorage setelah mount; jangan keburu nampilin
+  // "keranjang kosong" sebelum kebaca (bikin flash halaman kosong).
+  if (!ready) {
+    return <div className="wrap checkout checkout--empty" aria-busy="true" />;
   }
 
   if (items.length === 0) {

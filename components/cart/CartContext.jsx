@@ -60,6 +60,7 @@ export function CartProvider({ children }) {
 
   const value = {
     items,
+    ready,
     addItem,
     removeItem,
     setQty,
