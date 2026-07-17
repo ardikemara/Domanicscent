@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [promoState, setPromoState] = useState({ discount: 0, message: "", valid: false, freeship: false });
   const [checking, setChecking] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState("");
 
   // Tujuan pengiriman (autocomplete RajaOngkir) + ongkir real-time JNE
@@ -113,8 +114,10 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Tandai lagi diarahkan DULU, baru kosongkan keranjang: kalau kebalik,
+    // halaman sempat nampilin "keranjang kosong" sebelum nyampe /pay.
+    setRedirecting(true);
     clear();
-    // Semua pembayaran sekarang di halaman embedded /pay/[order].
     router.push(`/pay/${encodeURIComponent(res.orderNumber)}`);
   }
 
@@ -122,6 +125,15 @@ export default function CheckoutPage() {
   // "keranjang kosong" sebelum kebaca (bikin flash halaman kosong).
   if (!ready) {
     return <div className="wrap checkout checkout--empty" aria-busy="true" />;
+  }
+
+  if (redirecting) {
+    return (
+      <div className="wrap checkout checkout--empty">
+        <h1>Checkout</h1>
+        <p>Order kebuat! Mengarahkan ke halaman pembayaran...</p>
+      </div>
+    );
   }
 
   if (items.length === 0) {
