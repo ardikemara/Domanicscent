@@ -298,6 +298,22 @@ export async function startKomercePayment(orderNumber, channelCode, paymentType)
   }
 }
 
+// Cek status pembayaran order (dipakai "ruang tunggu" di /pay buat auto-lanjut
+// ke thank-you begitu webhook nandain lunas). Cuma baca DB, murah di-poll.
+export async function getOrderPaymentStatus(orderNumber) {
+  const clean = (orderNumber || "").trim();
+  if (!clean) return { ok: false };
+  try {
+    const sql = getSql();
+    const rows = await sql`
+      select payment_status from domanic.orders where order_number = ${clean} limit 1`;
+    if (rows.length === 0) return { ok: false };
+    return { ok: true, paymentStatus: rows[0].payment_status };
+  } catch {
+    return { ok: false };
+  }
+}
+
 // Newsletter / lead capture
 export async function subscribeLead(email, persona, source, name, phone) {
   const clean = (email || "").trim();
