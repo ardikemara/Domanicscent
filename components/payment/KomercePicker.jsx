@@ -31,6 +31,7 @@ export default function KomercePicker({ orderNumber, methods, total }) {
   // status dan otomatis lanjut ke thank-you begitu pembayaran terdeteksi.
   const [waiting, setWaiting] = useState(null); // { paymentUrl, isQris }
   const pollRef = useRef(null);
+  const payTabRef = useRef(null);
 
   const list = Array.isArray(methods) ? methods : [];
   const banks = list.filter((m) => m.payment_type === "va");
@@ -43,6 +44,11 @@ export default function KomercePicker({ orderNumber, methods, total }) {
       const res = await getOrderPaymentStatus(orderNumber);
       if (!alive) return;
       if (res.ok && res.paymentStatus === "paid") {
+        // Tutup tab halaman bayar Komerce (kalau masih kebuka) supaya customer
+        // otomatis balik ke tab ini, yang langsung pindah ke thank-you.
+        try {
+          payTabRef.current?.close();
+        } catch {}
         router.push(`/thank-you?order=${encodeURIComponent(orderNumber)}`);
       }
     }
@@ -84,6 +90,7 @@ export default function KomercePicker({ orderNumber, methods, total }) {
         payTab.location.href = res.paymentUrl;
       } catch {}
     }
+    payTabRef.current = payTab;
     setWaiting({ paymentUrl: res.paymentUrl, isQris });
   }
 
