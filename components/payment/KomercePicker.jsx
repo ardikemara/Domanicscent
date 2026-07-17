@@ -31,7 +31,6 @@ export default function KomercePicker({ orderNumber, methods, total }) {
   // status dan otomatis lanjut ke thank-you begitu pembayaran terdeteksi.
   const [waiting, setWaiting] = useState(null); // { paymentUrl, isQris }
   const pollRef = useRef(null);
-  const payTabRef = useRef(null);
 
   const list = Array.isArray(methods) ? methods : [];
   const banks = list.filter((m) => m.payment_type === "va");
@@ -44,11 +43,6 @@ export default function KomercePicker({ orderNumber, methods, total }) {
       const res = await getOrderPaymentStatus(orderNumber);
       if (!alive) return;
       if (res.ok && res.paymentStatus === "paid") {
-        // Tutup tab halaman bayar Komerce (kalau masih kebuka) supaya customer
-        // otomatis balik ke tab ini, yang langsung pindah ke thank-you.
-        try {
-          payTabRef.current?.close();
-        } catch {}
         router.push(`/thank-you?order=${encodeURIComponent(orderNumber)}`);
       }
     }
@@ -67,13 +61,6 @@ export default function KomercePicker({ orderNumber, methods, total }) {
     const key = isQris ? "qris" : method.bank_code;
     setBusy(key);
 
-    // Buka tab kosong SEKARANG (masih dalam gestur klik, lolos popup blocker),
-    // URL-nya diisi begitu transaksi kebuat. Kalau ke-blok, ada tombol fallback.
-    let payTab = null;
-    try {
-      payTab = window.open("", "_blank");
-    } catch {}
-
     const res = await startKomercePayment(
       orderNumber,
       isQris ? "" : method.bank_code,
@@ -81,16 +68,9 @@ export default function KomercePicker({ orderNumber, methods, total }) {
     );
     setBusy("");
     if (!res.ok || !res.paymentUrl) {
-      if (payTab) payTab.close();
       setErr(res.error || "Gagal menyiapkan pembayaran, coba lagi.");
       return;
     }
-    if (payTab) {
-      try {
-        payTab.location.href = res.paymentUrl;
-      } catch {}
-    }
-    payTabRef.current = payTab;
     setWaiting({ paymentUrl: res.paymentUrl, isQris });
   }
 
@@ -103,30 +83,28 @@ export default function KomercePicker({ orderNumber, methods, total }) {
   if (waiting) {
     return (
       <div className="paypick paypick--waiting">
-        <div className="paypick__wait">
+        <div className="paypick__waitbar">
           <span className="paypick__spinner" aria-hidden="true" />
-          <h3 className="paypick__waittitle">Menunggu pembayaranmu...</h3>
-          <p className="paypick__waittext">
-            Selesaikan pembayaran di tab yang barusan kebuka. Begitu pembayaranmu masuk,
-            halaman ini <b>otomatis lanjut sendiri</b>, nggak perlu di-refresh.
+          <p>
+            <b>Menunggu pembayaranmu...</b> Selesaikan di bawah ini. Begitu pembayaran masuk,
+            halaman ini otomatis lanjut sendiri.
           </p>
-          <a
-            className="btn btn--solid paypick__waitbtn"
-            href={waiting.paymentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Buka halaman pembayaran
-          </a>
-          <p className="paypick__waithint">
-            {waiting.isQris
-              ? "QRIS berlaku 5 menit. Kalau keburu kedaluwarsa, tutup dan pilih metode lagi."
-              : "Transfer VA berlaku 24 jam. Mau bayar nanti? Aman, konfirmasi otomatis dikirim ke email begitu pembayaran masuk."}
-          </p>
-          <button className="paypick__waitback" type="button" onClick={() => setWaiting(null)}>
-            Pilih metode lain
-          </button>
         </div>
+        <iframe
+          className="paypick__frame"
+          src={waiting.paymentUrl}
+          title="Halaman pembayaran Komerce"
+        />
+        <p className="paypick__waithint">
+          {waiting.isQris
+            ? "QRIS berlaku 5 menit. Kalau keburu kedaluwarsa, pilih metode lagi."
+            : "Transfer VA berlaku 24 jam. Mau bayar nanti? Aman, konfirmasi otomatis dikirim ke email begitu pembayaran masuk."}
+          {" "}
+          <a href={waiting.paymentUrl} target="_blank" rel="noopener noreferrer">Buka di tab terpisah</a>
+        </p>
+        <button className="paypick__waitback" type="button" onClick={() => setWaiting(null)}>
+          Pilih metode lain
+        </button>
       </div>
     );
   }
