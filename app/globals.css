@@ -860,3 +860,14 @@ footer{background:var(--charcoal);color:var(--beige)}
 .affdash__cashout .field__hint{margin-top:8px}
 .affdash__cashoutok{font-size:.85rem;color:var(--umber);background:var(--cream);border-radius:10px;padding:12px 16px;margin:2px 0 12px}
 .adm__muted{color:var(--taupe);font-size:.78rem}
+
+/* ===== Ruang tunggu pembayaran ===== */
+.paypick__wait{background:#fff;border:1px solid var(--cream);border-radius:14px;padding:34px 28px;text-align:center}
+.paypick__spinner{display:inline-block;width:34px;height:34px;border:3px solid var(--cream);border-top-color:var(--umber);border-radius:50%;animation:payspin .9s linear infinite;margin-bottom:16px}
+@keyframes payspin{to{transform:rotate(360deg)}}
+.paypick__waittitle{font-family:var(--disp);font-weight:400;font-size:1.15rem;color:var(--umber);margin-bottom:10px}
+.paypick__waittext{font-size:.88rem;line-height:1.65;color:var(--charcoal);margin-bottom:18px}
+.paypick__waitbtn{width:100%}
+.paypick__waithint{font-size:.76rem;color:var(--taupe);line-height:1.6;margin:14px 0 4px}
+.paypick__waitback{background:none;border:0;font-size:.78rem;color:var(--taupe);text-decoration:underline;cursor:pointer;margin-top:8px}
+.paypick__waitback:hover{color:var(--charcoal)}
