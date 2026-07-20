@@ -92,7 +92,9 @@ export default function Article() {
         <h2>Kenapa parfum mengandung alkohol sama sekali</h2>
         <p>
           Alkohol adalah pelarut yang melarutkan minyak wangi dan membantu aromanya menyebar rata di
-          kulit lalu menguap perlahan. Hampir semua parfum semprot memakainya, jadi keberadaan
+          kulit lalu menguap perlahan, dibantu{" "}
+          <Link href="/journal/kamus-istilah-parfum#fixative">fixative</Link> yang memperlambat
+          penguapannya. Hampir semua parfum semprot memakainya, jadi keberadaan
           alkohol itu normal. Masalahnya bukan ada atau tidaknya alkohol, tapi apakah dia sudah
           menyatu dengan aromanya atau belum.
         </p>
@@ -134,7 +136,8 @@ export default function Article() {
         <p>
           Semua parfum Domanic adalah{" "}
           <Link href="/journal/apa-itu-extrait-de-parfum">extrait de parfum</Link> yang menjalani
-          maserasi 2 sampai 4 minggu sebelum dibotolkan. Kami sengaja menunggu supaya molekulnya
+          <Link href="/journal/kamus-istilah-parfum#maserasi">maserasi</Link> 2 sampai 4 minggu
+          sebelum dibotolkan. Kami sengaja menunggu supaya molekulnya
           menyatu dan alkoholnya tidak lagi terasa. Hasilnya wangi yang halus sejak semprotan
           pertama, bukan yang menyengat lalu perlu didiamkan dulu di kulit. We compose, not cook.
         </p>

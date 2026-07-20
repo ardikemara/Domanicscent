@@ -111,7 +111,7 @@ export default function Article() {
           <tbody>
             <tr><td>Top notes</td><td>Fresh dan ringan, bersih</td></tr>
             <tr><td>Middle notes</td><td>Floral lembut, tidak berat</td></tr>
-            <tr><td>Base notes</td><td>Kayu halus yang menenangkan</td></tr>
+            <tr><td>Base notes</td><td>Kayu halus yang menenangkan (<Link href="/journal/kamus-istilah-parfum#cashmeran">cashmeran</Link>, cedar, <Link href="/journal/kamus-istilah-parfum#vetiver">vetiver</Link>)</td></tr>
           </tbody>
         </table>
         <p>

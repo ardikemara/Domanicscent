@@ -112,14 +112,15 @@ export default function Article() {
           <tbody>
             <tr><td>Top notes</td><td>Pir dan mirabelle yang lembut</td></tr>
             <tr><td>Middle notes</td><td>Egyptian jasmine, freesia (floral)</td></tr>
-            <tr><td>Base notes</td><td>Vanilla dan sandalwood yang hangat</td></tr>
+            <tr><td>Base notes</td><td>Vanilla dan <Link href="/journal/kamus-istilah-parfum#sandalwood">sandalwood</Link> yang hangat</td></tr>
           </tbody>
         </table>
         <p>
           Karena Whisper adalah{" "}
           <Link href="/journal/apa-itu-extrait-de-parfum">extrait de parfum</Link>, transisi antar{" "}
           <Link href="/journal/arti-top-middle-base-notes">lapisan notes</Link> terasa pelan dan
-          halus, dari floral yang mekar sampai vanilla yang menutup dengan tenang.
+          halus, dari floral yang mekar sampai vanilla yang menutup dengan tenang di{" "}
+          <Link href="/journal/kamus-istilah-parfum#dry-down">dry down</Link>.
         </p>
       </section>
 

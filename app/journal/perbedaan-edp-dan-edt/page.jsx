@@ -71,7 +71,9 @@ export default function Article() {
       <p className="article__meta">{meta.dateDisplay} · {meta.readTime} baca</p>
 
       <p className="infopage__lead">
-        Perbedaan utama EDP (eau de parfum) dan EDT (eau de toilette) ada di konsentrasi minyak
+        Perbedaan utama EDP (<Link href="/journal/kamus-istilah-parfum#eau-de-parfum">eau de
+        parfum</Link>) dan EDT (<Link href="/journal/kamus-istilah-parfum#eau-de-toilette">eau de
+        toilette</Link>) ada di konsentrasi minyak
         wanginya: EDP sekitar 15-20%, EDT sekitar 5-15%. Karena lebih pekat, EDP lebih tahan lama,
         aromanya lebih dalam, dan harganya lebih tinggi. EDT lebih ringan, lebih segar, dan lebih
         cepat pudar. Dan di atas keduanya, masih ada satu tingkat lagi: extrait de parfum.

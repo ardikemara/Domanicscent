@@ -113,7 +113,10 @@ export default function Article() {
         <p>
           Karena molekul aroma bunga umumnya ringan, dia duduk di top dan middle notes yang menguap
           duluan. Floral tanpa fondasi akan indah 30 menit lalu pergi. Solusinya: pilih floral yang
-          ditopang base notes berat, vanilla, sandalwood, musk, dan konsentrasi tinggi. Prinsipnya
+          ditopang base notes berat, vanilla,{" "}
+          <Link href="/journal/kamus-istilah-parfum#sandalwood">sandalwood</Link>, musk,{" "}
+          <Link href="/journal/kamus-istilah-parfum#patchouli">patchouli</Link>, dan konsentrasi
+          tinggi. Prinsipnya
           sama dengan yang kami bahas di{" "}
           <Link href="/journal/parfum-wanita-tahan-lama">parfum wanita tahan lama</Link>: yang
           menahan wangi bukan bunganya, tapi apa yang ada di bawahnya.

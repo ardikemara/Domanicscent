@@ -77,8 +77,9 @@ export default function Article() {
       <p className="article__meta">{meta.dateDisplay} · {meta.readTime} baca</p>
 
       <p className="infopage__lead">
-        Parfum yang cocok untuk The Midnight Intellectual adalah parfum gourmand yang hangat dan
-        dalam, aroma kopi dan rum yang berkesan tanpa berteriak. Buat kamu yang tenang di luar tapi
+        Parfum yang cocok untuk The Midnight Intellectual adalah parfum{" "}
+        <Link href="/journal/kamus-istilah-parfum#gourmand">gourmand</Link> yang hangat dan dalam,
+        aroma kopi dan rum yang berkesan tanpa berteriak. Buat kamu yang tenang di luar tapi
         ramai di kepala, wangimu bukan yang memenuhi ruangan, tapi yang orang ingat setelah kamu
         pergi. Di Domanic, itu Velvet Rum.
       </p>
@@ -102,7 +103,7 @@ export default function Article() {
         <h2>Kenapa aroma gourmand yang cocok</h2>
         <p>
           Gourmand adalah keluarga aroma yang mengingatkan pada hal hangat dan nyaman: kopi, rum,
-          vanilla, kayu. Karakternya intim dan dekat ke kulit, bukan yang menyebar memenuhi ruangan.
+          vanilla, <Link href="/journal/kamus-istilah-parfum#tonka-bean">tonka</Link>, kayu. Karakternya intim dan dekat ke kulit, bukan yang menyebar memenuhi ruangan.
           Ini sejalan dengan cara The Midnight Intellectual hadir: pelan, dalam, dan diingat.
         </p>
         <table className="article__table">

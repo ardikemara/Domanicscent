@@ -105,7 +105,7 @@ export default function Article() {
             <tr><td>Cokelat / dark chocolate</td><td>Manis-pahit, dalam</td></tr>
             <tr><td>Kopi</td><td>Pahit, roasted, dewasa</td></tr>
             <tr><td>Karamel</td><td>Manis penuh, gurih</td></tr>
-            <tr><td>Tonka</td><td>Manis creamy dengan sisi almond</td></tr>
+            <tr><td><Link href="/journal/kamus-istilah-parfum#tonka-bean">Tonka</Link></td><td>Manis creamy dengan sisi almond</td></tr>
             <tr><td>Rum</td><td>Hangat, sedikit nakal</td></tr>
           </tbody>
         </table>
@@ -118,6 +118,9 @@ export default function Article() {
           gula, vanilla, tanpa penyeimbang. Gourmand yang bagus selalu melawan manisnya dengan
           sesuatu yang pahit atau gelap: kopi, dark chocolate, rum, atau kayu seperti sandalwood dan
           vetiver. Hasilnya bukan permen, tapi dessert yang disusun chef, manis yang punya lapisan.
+          Racikan seimbang seperti inilah yang membentuk{" "}
+          <Link href="/journal/kamus-istilah-parfum#accord">accord</Link> yang matang: gabungan
+          notes yang menyatu jadi satu kesan baru.
         </p>
       </section>
 

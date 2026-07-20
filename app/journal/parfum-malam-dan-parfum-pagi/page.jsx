@@ -93,7 +93,10 @@ export default function Article() {
         <p>
           Tiga hal berperan. <b>Suhu tubuh:</b> kulit yang lebih hangat membuat aroma menyebar lebih
           cepat dan base notes lebih menonjol. <b>Kelembapan dan udara:</b> siang yang panas dan
-          berangin menerbangkan aroma, malam yang tenang menahannya lebih dekat. <b>Konteks sosial:</b>{" "}
+          berangin menerbangkan aroma, malam yang tenang menahannya lebih dekat, jadi{" "}
+          <Link href="/journal/kamus-istilah-parfum#projection">projection</Link> dan{" "}
+          <Link href="/journal/kamus-istilah-parfum#sillage">sillage</Link> parfummu terasa lebih
+          besar di malam hari. <b>Konteks sosial:</b>{" "}
           pagi menuntut yang bersih dan ringan, malam memberi ruang buat yang dalam dan berani.
         </p>
       </section>

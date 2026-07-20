@@ -129,7 +129,12 @@ export default function Article() {
         <h2>Tanda parfum sudah rusak</h2>
         <p>
           Ada tiga tanda gampang: warna cairan menggelap atau keruh, aroma berubah dari aslinya, dan
-          muncul bau asam atau logam di semprotan pertama. Kalau salah satunya muncul, parfumnya
+          muncul bau asam atau logam di semprotan pertama. Pastikan perubahan itu terjadi di
+          botolnya, bukan sekadar beda karena{" "}
+          <Link href="/journal/kamus-istilah-parfum#skin-chemistry">skin chemistry</Link> di
+          kulitmu. Buat mengecek umur parfum, lihat{" "}
+          <Link href="/journal/kamus-istilah-parfum#batch-code">batch code</Link> di kemasannya.
+          Kalau salah satu tanda tadi muncul, parfumnya
           kemungkinan sudah teroksidasi.
         </p>
       </section>
