@@ -107,6 +107,9 @@ export default function Article() {
         <p>
           Urutannya selalu sama: yang ringan menguap duluan, yang berat bertahan paling lama. Itu
           sebabnya wangi yang kamu cium di menit pertama beda dengan yang menempel di sore hari.
+          Definisi ringkas tiap lapisan ada di kamus istilah parfum:{" "}
+          <Link href="/journal/kamus-istilah-parfum#top-notes">top notes</Link> dan{" "}
+          <Link href="/journal/kamus-istilah-parfum#base-notes">base notes</Link>.
         </p>
       </section>
 

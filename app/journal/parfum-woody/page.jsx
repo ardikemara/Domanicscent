@@ -106,6 +106,12 @@ export default function Article() {
             <tr><td>Oud (gaharu)</td><td>Dalam, intens, paling berkarakter</td></tr>
           </tbody>
         </table>
+        <p>
+          Definisi lengkap tiap bahan, termasuk{" "}
+          <Link href="/journal/kamus-istilah-parfum#vetiver">vetiver</Link> dan{" "}
+          <Link href="/journal/kamus-istilah-parfum#sandalwood">sandalwood</Link>, ada di kamus
+          istilah parfum.
+        </p>
       </section>
 
       <section className="infopage__item">

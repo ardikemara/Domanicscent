@@ -12,6 +12,7 @@ export default function sitemap() {
     { url: `${BASE}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE}/shipping`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE}/journal`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/journal/kamus-istilah-parfum`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
   const productPages = products.map((p) => ({

@@ -133,7 +133,11 @@ export default function Article() {
           kena dampaknya, makanya wangi yang enak di mall bisa hilang sebelum siang. Solusinya ada di
           konsentrasi: makin tinggi kadar minyak wangi dan makin rendah alkoholnya, makin tahan di
           cuaca tropis. Ini bedanya bisa kamu baca lengkap di{" "}
-          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>.
+          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>. Istilah
+          performa seperti{" "}
+          <Link href="/journal/kamus-istilah-parfum#longevity">longevity</Link> dan{" "}
+          <Link href="/journal/kamus-istilah-parfum#sillage">sillage</Link> bisa kamu cek di kamus
+          istilah parfum.
         </p>
       </section>
 

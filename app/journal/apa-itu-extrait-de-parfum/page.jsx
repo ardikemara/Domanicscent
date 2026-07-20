@@ -108,7 +108,9 @@ export default function Article() {
         <p>
           Angka persisnya beda-beda tiap rumah parfum, tapi urutannya selalu sama: extrait ada di
           puncak piramida konsentrasi. Kalau kamu masih bingung dua yang di tengah, baca dulu{" "}
-          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>.
+          <Link href="/journal/perbedaan-edp-dan-edt">perbedaan EDP dan EDT</Link>. Definisi
+          ringkas tiap konsentrasi juga ada di{" "}
+          <Link href="/journal/kamus-istilah-parfum#extrait-de-parfum">kamus istilah parfum</Link>.
         </p>
       </section>
 
