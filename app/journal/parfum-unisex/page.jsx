@@ -78,7 +78,9 @@ export default function Article() {
 
       <p className="infopage__lead">
         Parfum unisex adalah parfum yang dirancang tanpa terikat gender, biasanya dibangun dari notes
-        yang netral seperti citrus, woody, atau musk, dan bisa dipakai siapa saja. Tapi pertanyaan
+        yang netral seperti citrus, woody, atau{" "}
+        <Link href="/journal/kamus-istilah-parfum#musk">musk</Link>, dan bisa dipakai siapa saja.
+        Tapi pertanyaan
         yang lebih menarik bukan "parfum unisex itu apa", melainkan: kenapa kita pernah percaya bahwa
         aroma punya jenis kelamin?
       </p>
@@ -113,7 +115,7 @@ export default function Article() {
           <tbody>
             <tr><td>Oud, kayu, tembakau</td><td>"Maskulin"</td><td>Dipakai semua gender di Timur Tengah sejak dulu</td></tr>
             <tr><td>Melati, mawar, floral</td><td>"Feminin"</td><td>Mawar adalah nota klasik parfum pria di banyak budaya</td></tr>
-            <tr><td>Vanilla, gourmand</td><td>"Feminin"</td><td>Base favorit banyak parfum niche unisex</td></tr>
+            <tr><td>Vanilla, gourmand</td><td>"Feminin"</td><td>Base favorit banyak parfum <Link href="/journal/kamus-istilah-parfum#niche">niche</Link> unisex</td></tr>
             <tr><td>Citrus, green, musk</td><td>Netral</td><td>Memang netral, makanya jadi tulang punggung parfum unisex</td></tr>
           </tbody>
         </table>

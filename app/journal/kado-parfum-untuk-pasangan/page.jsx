@@ -130,7 +130,10 @@ export default function Article() {
           <Link href="/journal/parfum-untuk-the-midnight-intellectual">Velvet Rum untuk yang suka
           wangi hangat dan berkesan</Link>. Atau ajak dia diam-diam{" "}
           <Link href="/persona">ikut kuis persona</Link> biar kamu tahu arahnya tanpa spoiler
-          kadonya.
+          kadonya. Dan kalau mau lebih hati-hati, kasih{" "}
+          <Link href="/journal/kamus-istilah-parfum#decant">decant</Link> kecil dulu buat dia coba,
+          daripada <Link href="/journal/kamus-istilah-parfum#blind-buy">blind buy</Link> botol
+          penuh.
         </p>
       </section>
 

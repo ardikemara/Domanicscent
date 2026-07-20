@@ -93,7 +93,9 @@ export default function Article() {
         <p>
           Aroma yang identik dengan parfum wanita, seperti floral dan citrus, kebetulan adalah notes
           yang paling ringan dan paling cepat menguap. Ditambah kebanyakan dijual sebagai EDT dengan
-          konsentrasi rendah, wajar kalau wanginya hilang cepat, apalagi di cuaca panas.
+          konsentrasi rendah, wajar kalau wanginya hilang cepat, apalagi di cuaca panas. Istilah
+          teknis untuk daya tahan ini adalah{" "}
+          <Link href="/journal/kamus-istilah-parfum#longevity">longevity</Link>.
         </p>
       </section>
 
@@ -119,7 +121,8 @@ export default function Article() {
         <h2>Rahasianya ada di base notes</h2>
         <p>
           Yang bikin parfum wanita bertahan bukan floral-nya, tapi apa yang menopang di bawahnya.
-          Vanilla, sandalwood, musk, dan patchouli adalah base notes berat yang menahan aroma tetap
+          Vanilla, sandalwood, <Link href="/journal/kamus-istilah-parfum#musk">musk</Link>, dan
+          patchouli adalah base notes berat yang menahan aroma tetap
           di kulit sampai malam. Parfum manis (sweet) sering terasa lebih awet justru karena vanilla
           dan gourmand-nya berat. Whisper, misalnya, floral yang lembut tapi ditopang vanilla dan
           sandalwood yang hangat.

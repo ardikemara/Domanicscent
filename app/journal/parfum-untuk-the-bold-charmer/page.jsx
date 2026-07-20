@@ -77,8 +77,10 @@ export default function Article() {
       <p className="article__meta">{meta.dateDisplay} · {meta.readTime} baca</p>
 
       <p className="infopage__lead">
-        Parfum yang cocok untuk The Bold Charmer adalah parfum oud, aroma kayu gaharu yang dalam dan
-        magnetik, ditopang musk dan patchouli yang kuat. Buat kamu yang berani, percaya diri, dan
+        Parfum yang cocok untuk The Bold Charmer adalah parfum{" "}
+        <Link href="/journal/kamus-istilah-parfum#oud">oud</Link>, aroma kayu gaharu yang dalam dan
+        magnetik, ditopang musk dan{" "}
+        <Link href="/journal/kamus-istilah-parfum#patchouli">patchouli</Link> yang kuat. Buat kamu yang berani, percaya diri, dan
         terbiasa bikin orang menoleh begitu masuk ruangan, wangimu harus ikut bikin statement. Di
         Domanic, itu Oud Majesty.
       </p>

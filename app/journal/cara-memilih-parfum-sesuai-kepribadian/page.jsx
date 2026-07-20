@@ -98,7 +98,10 @@ export default function Article() {
         </p>
         <p>
           Kalau kamu mulai dari karakter, parfum berhenti jadi aksesori dan mulai jadi bagian dari
-          cara kamu hadir. Itu sebabnya setiap parfum Domanic lahir dari sebuah persona, bukan dari
+          cara kamu hadir. Dari situlah lahir{" "}
+          <Link href="/journal/kamus-istilah-parfum#signature-scent">signature scent</Link>, wangi
+          yang melekat dengan identitasmu. Itu sebabnya setiap parfum Domanic lahir dari sebuah
+          persona, bukan dari
           resep. Kami menyebutnya wear your identity.
         </p>
       </section>

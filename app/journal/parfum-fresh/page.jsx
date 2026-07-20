@@ -78,7 +78,8 @@ export default function Article() {
 
       <p className="infopage__lead">
         Parfum fresh adalah parfum dengan aroma yang ringan, bersih, dan terasa lapang, biasanya dari
-        keluarga citrus, green, aquatic, atau floral ringan. Karakternya menyegarkan dan gampang
+        keluarga citrus, green, <Link href="/journal/kamus-istilah-parfum#aquatic">aquatic</Link>,
+        atau floral ringan. Karakternya menyegarkan dan gampang
         dipakai ke mana saja, jadi salah satu jenis parfum paling nyaman buat cuaca panas dan lembap
         seperti di Indonesia.
       </p>
@@ -143,8 +144,8 @@ export default function Article() {
         <p>
           Kalau kamu cari parfum fresh yang ringan buat sehari-hari tapi tetap tahan lama,{" "}
           <Link href="/products/lily-wood">Lily Wood</Link> jawabannya. Fresh dan unisex, dibuka
-          litchi dan bergamot yang cerah, floral lembut di tengah, lalu mendarat di cedar dan vetiver
-          yang membumi. Sebagai extrait de parfum yang dimaserasi 2 sampai 4 minggu, dia ringan tapi
+          litchi dan bergamot yang cerah, floral lembut di tengah, lalu mendarat di cedar dan{" "}
+          <Link href="/journal/kamus-istilah-parfum#vetiver">vetiver</Link> yang membumi. Sebagai extrait de parfum yang dimaserasi 2 sampai 4 minggu, dia ringan tapi
           matang, bukan segar yang hilang sebelum siang.
         </p>
       </section>

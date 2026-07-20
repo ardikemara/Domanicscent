@@ -94,7 +94,10 @@ export default function Article() {
           Dua hal bekerja melawanmu. Pertama, konsentrasi: kebanyakan parfum yang beredar adalah EDT,
           kadar minyak wanginya rendah dan alkoholnya tinggi. Kedua, iklim: panas dan lembap
           mempercepat penguapan. Gabungan keduanya bikin wangi yang enak di pagi hari hilang sebelum
-          makan siang.
+          makan siang. Di dunia parfum, daya tahan ini disebut{" "}
+          <Link href="/journal/kamus-istilah-parfum#longevity">longevity</Link>, dan jejak aroma
+          yang kamu tinggalkan saat lewat disebut{" "}
+          <Link href="/journal/kamus-istilah-parfum#sillage">sillage</Link>.
         </p>
       </section>
 
