@@ -139,7 +139,8 @@ export default function Article() {
         <p>
           Kenapa ada dua istilah? Maserasi adalah istilah teknis yang dipakai industri parfum,
           sementara resting adalah sebutan sehari-hari yang lebih populer di komunitas fragrance
-          Indonesia. Satu proses, dua bahasa.
+          Indonesia. Satu proses, dua bahasa. Definisi ringkasnya juga ada di{" "}
+          <Link href="/journal/kamus-istilah-parfum#maserasi">kamus istilah parfum</Link>.
         </p>
         <p>
           Satu nuansa kecil biar jujur: sebagian orang memakai kata resting juga untuk parfum yang
